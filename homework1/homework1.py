@@ -3,12 +3,12 @@
 #
 # Modified code by Brian Cooper
 #
-# Usage: burst.py -h
+# Help: python homework1.py -h
 import sys, os
 import argparse
 from subprocess import Popen, PIPE
 
-# Setup and establish command line arguments
+# setup and establish command line arguments
 def make_arg_parser():
     parser = argparse.ArgumentParser(prog='homework1.py',
                           formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -37,29 +37,38 @@ def make_arg_parser():
                       help="Verbose output")
     return parser
 
-# Runs BURST to search query sequences against reference sequences
+# runs BURST to search query sequences against reference sequences
 def run_burst(query, ref, taxonomy, output, burst_cmd='./burst', verbose=False):
     """thread worker function"""
 
-    # Construct command parameters for BURST based on command line input
+    # construct command parameters for BURST based on command line input
     cmd = f"{burst_cmd} -r {ref} -q {query} --taxonomy {taxonomy} -o {output}"
 
     return run_command(cmd, verbose=verbose)
 
-# Runs the given command and returns return value and output
+# runs the given command and returns return value and output
 def run_command(cmd, verbose=False):
+    # verbose output
     if verbose:
+        # print entered command
         print(cmd)
+        # print return value code, output, error
+        print(return_value)
+        print(stdout, end="")
+        print(stderr)
+
+    # process command line pipe stream
     proc = Popen(cmd,shell=True,universal_newlines=True,stdout=PIPE,stderr=PIPE)
     stdout, stderr = proc.communicate()
     return_value = proc.returncode
+
     return return_value, stdout, stderr
 
-
+# main program execution
 if __name__ == '__main__':
     parser = make_arg_parser()
     args = parser.parse_args()
 
-    # Execute the BURST program with provided command-line arguments
+    # execute the BURST program with provided command-line arguments
     run_burst(args.query, args.ref, args.taxonomy, args.output, args.command,
               args.verbose)
