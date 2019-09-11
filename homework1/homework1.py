@@ -1,12 +1,15 @@
-# Template file for CSCI 5481 Fall 2015 Exercise 1
-# Usage:
-# template.py -h
+# Original code based on Dan Knights' work
+#   for CSCI 5481 at University of Minnesota
+#
+# Modified code by Brian Cooper
+#
+# Usage: burst.py -h
 import sys, os
 import argparse
 from subprocess import Popen, PIPE
 
 def make_arg_parser():
-    parser = argparse.ArgumentParser(prog='template-python3.py',
+    parser = argparse.ArgumentParser(prog='homework1.py',
                           formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--version', action='version', version='%prog 2.0')
     parser.add_argument("-q","--query",
@@ -56,5 +59,5 @@ if __name__ == '__main__':
     parser = make_arg_parser()
     args = parser.parse_args()
 
-
     ### YOUR CODE HERE ###
+    run_burst(args.query, args.ref, args.taxonomy, args.output, args.command, args.verbose)
