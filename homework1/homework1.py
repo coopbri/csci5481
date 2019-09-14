@@ -51,17 +51,24 @@ def run_command(cmd, verbose=False):
     # verbose output
     if verbose:
         # print entered command
-        print(cmd)
+        print(f"\nCommand: {cmd}\n")
 
     # process command line pipe stream
     proc = Popen(cmd,shell=True,universal_newlines=True,stdout=PIPE,stderr=PIPE)
     stdout, stderr = proc.communicate()
     return_value = proc.returncode
 
-    # print return value code, output, error
-    print(return_value)
-    print(stdout, end="")
-    print(stderr)
+    # print return value code
+    print(f"Return value: {return_value}\n")
+
+    # print output
+    print(stdout)
+
+    # print any errors
+    if stderr:
+        print(f"Error(s): {stderr}\n")
+    else:
+        print("No errors!\n")
 
     return return_value, stdout, stderr
 
