@@ -35,13 +35,16 @@ if __name__ == '__main__':
         match = re.search(pattern, line)
         species.append(match)
 
-    print("Question 4b")
-    print("===========")
-
     for item in species:
         # Remove ambiguous species from list
         if (item.group() == "s__"):
             species.remove(item)
+
+    # Determine most common species in list (highest frequency)
+    common = max(set(species), key=species.count)
+    print("Question 4b")
+    print("===========")
+    print(f"Most common determinate species:    {common.group()}\n")
 
     # ==========================================================================
     # Question 4c: average percent similarity of matches
