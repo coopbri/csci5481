@@ -32,19 +32,17 @@ if __name__ == '__main__':
     # search each line for species name string, add to list
     species = []
     for line in outfile:
-        match = re.search(pattern, line)
+        match = re.search(pattern, line).group()
         species.append(match)
 
-    for item in species:
-        # Remove ambiguous species from list
-        if (item.group() == "s__"):
-            species.remove(item)
+    # Remove indeterminate species from list
+    determSpecies = [s for s in species if s != "s__"]
 
     # Determine most common species in list (highest frequency)
-    common = max(set(species), key=species.count)
+    common = max(set(determSpecies), key=determSpecies.count)
     print("Question 4b")
     print("===========")
-    print(f"Most common determinate species:    {common.group()}\n")
+    print(f"Most common determinate species:    {common}\n")
 
     # ==========================================================================
     # Question 4c: average percent similarity of matches
