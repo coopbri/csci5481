@@ -92,7 +92,7 @@ python q4.py
 ```
 Question 4a
 ===========
-Sequences that match database at 97%+ similarity:     34.8436%
+Sequences that match database at 97%+ similarity:     98.9981%
 
 Question 4b
 ===========
@@ -107,6 +107,6 @@ Average percent similarity of matches at 97%+ similarity:     98.4779%
 
 #### Question 4 Answers
 
-1. Of the original input query sequences, approximately __34.84%__ had a match in the reference database at 97% or above.
+1. Of the original input query sequences, approximately __98.998%__ had a match in the reference database at 97% or above.
 2. The most common (determinate) bacterial species in the query set is _Faecalibacterium prausnitzii_.
 3. The average percent similarity of the matches among those above 97% is approximately __98.48%__.

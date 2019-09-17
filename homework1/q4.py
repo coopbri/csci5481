@@ -16,7 +16,7 @@ if __name__ == '__main__':
     # store all values above threshold (97 percent similarity)
     data = [float(n.split()[2]) for n in outfile if float(n.split()[2]) >= 97.0]
 
-    queryMatch = len(data) / 130727
+    queryMatch = len(data) / len(outfile)
     print("Question 4a")
     print("===========")
     print(f"Sequences that match database at 97%+ similarity: \
