@@ -45,8 +45,45 @@ def createMatrix():
 # Needleman-Wunsch algorithm                                                   #
 #   (param) V: similarity matrix                                               #
 # ============================================================================ #
-# def needlemanWunsch(V):
+def needlemanWunsch(V):
+    # Initialize alignments as empty strings
+    alignQ = ""
+    alignR = ""
 
+    finalScore = V[len(q)-1][len(r)-1]
+
+    i = len(q)
+    j = len(r)
+
+    while i > 0 and j > 0:
+        curScore = V[i][j]
+        diagScore = V[i-1][j-1]
+        leftScore = V[i][j-1]
+        aboveScore = V[i-1][j]
+
+        if (curScore == diagScore + MATCH) or (curScore == diagScore + MISMATCH):
+            alignQ += q[i-1]
+            alignR += r[j-1]
+            i--
+            j--
+        elif curScore == leftScore + GAP:
+            alignQ += "-"
+            alignR += r[j-1]
+            j--
+        elif curScore == aboveScore + GAP:
+            alignQ += q[i-1]
+            alignR += "-"
+            i--
+
+    # CHECK
+	while i > 0:
+		alignQ += q[i-1]
+		alignR = "-"
+		i--
+	while j > 0:
+		alignQ += "-"
+		alignR = r[j-1]
+		j--
 
 # ============================================================================ #
 # Main function                                                                #
