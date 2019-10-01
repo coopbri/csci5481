@@ -19,7 +19,7 @@ GAP = -2
 # ============================================================================ #
 def make_arg_parser():
     parser = argparse.ArgumentParser(prog='homework2.py',
-                          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-q","--query",
                       default=argparse.SUPPRESS,
                       required=True,
@@ -163,11 +163,9 @@ def anchored_nw(q, r, qMatch, rMatch):
 
         V = create_matrix(q[qStart:qEnd], r[rStart:rEnd])
 
-        # (tmpscore, _, _) = find_alignments(qMatch[qStart:qEnd], rMatch[rStart:rEnd])
-        (_, _, tmpscore) = needleman_wunsch(V, q[qStart:qEnd], r[rStart:rEnd])
+        _, _, score = needleman_wunsch(V, q[qStart:qEnd], r[rStart:rEnd])
 
-
-        finalScore += tmpscore
+        finalScore += score
         new_human += q[qStart:qEnd]
         new_fly += r[rStart:rEnd]
 
@@ -177,11 +175,12 @@ def anchored_nw(q, r, qMatch, rMatch):
 
             V = create_matrix(q[qEnd:qNext], r[rEnd:rNext])
 
-            (tmphseq, tmpfseq, tmpscore) = needleman_wunsch(V, q[qEnd:qNext], r[rEnd:rNext])
+            qSeqSegment, rSeqSegment, score = needleman_wunsch(V,
+                q[qEnd:qNext], r[rEnd:rNext])
 
-            finalScore += tmpscore
-            new_human += tmphseq
-            new_fly += tmpfseq
+            finalScore += score
+            new_human += qSeqSegment
+            new_fly += rSeqSegment
 
         elif n == num_matches-1:
             new_human += q[qEnd:]
