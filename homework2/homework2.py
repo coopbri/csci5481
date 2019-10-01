@@ -84,37 +84,45 @@ def needleman_wunsch(V):
     alignQ = ""
     alignR = ""
 
+    # Length of sequences
     i = len(q)
     j = len(r)
 
-    finalScore = V[i][j]
+    # Process entire sequences
+    while i > 0 or j > 0:
+        if q[i-1] == r[j-1]:
+            match = MATCH
+        else:
+            match = MISMATCH
 
-    while i > 0 and j > 0:
-        # Determine scores in proximity
-        curScore = V[i][j]
-
-        if (i > 0 and j > 0) and ((curScore == V[i-1][j-1] + MATCH) or (curScore == V[i-1][j-1] + MISMATCH)):
-            alignQ = q[i-1] + alignQ
-            alignR = r[j-1] + alignR
-            i -= 1
-            j -= 1
-        elif curScore == V[i-1][j] + GAP:
+        if (i > 0 and j > 0):
+            # Match found
+            if V[i-1][j-1] == (V[i][j] - match):
+                alignQ = q[i-1] + alignQ
+                alignR = r[j-1] + alignR
+                i -= 1
+                j -= 1
+            # From left
+            elif V[i-1][j] == (V[i][j] - GAP):
+                alignQ = q[i-1] + alignQ
+                alignR = "-" + alignR
+                i -= 1
+            # From above
+            elif V[i][j-1] == (V[i][j] - GAP):
+                alignQ = "-" + alignQ
+                alignR = r[j-1] + alignR
+                j -= 1
+        elif i > 0:
             alignQ = q[i-1] + alignQ
             alignR = "-" + alignR
             i -= 1
-        else:
+        elif j > 0:
             alignQ = "-" + alignQ
             alignR = r[j-1] + alignR
             j -= 1
 
-    # while i > 0:
-    #     alignQ = q[i-1] + alignQ
-    #     alignR = "-" + alignR
-    #     i -= 1
-    # while j > 0:
-    #     alignQ = "-" + alignQ
-    #     alignR = r[j-1] + alignR
-    #     j -= 1
+    # Final score, at bottom right of matrix
+    finalScore = V[-1][-1]
 
     return alignQ, alignR, finalScore
 
