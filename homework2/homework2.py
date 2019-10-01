@@ -2,8 +2,8 @@
 # University of Minnesota
 # Code by Brian Cooper
 #
-# This file implements a modified version (anchored) of the Needleman-Wunsch
-#   algorithm for sequence alignment.
+# This file implements the Needleman-Wunsch algorithm for sequence alignment. If
+#   a match file is specified, a modified version (anchored) is executed.
 
 import numpy as np
 import sys
