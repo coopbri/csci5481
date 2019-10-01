@@ -151,42 +151,55 @@ def needleman_wunsch(V, q, r):
 def anchored_nw(q, r, qMatch, rMatch):
     finalScore = 0.0
 
-    new_human = q[:int(qMatch[0,0])]
-    new_fly = r[:int(rMatch[0,0])]
-    num_matches = np.shape(qMatch)[0]
+    alignQ = q[:int(qMatch[0,0])]
+    alignR = r[:int(rMatch[0,0])]
+    numMatches = np.shape(qMatch)[0]
 
-    for n in range(num_matches):
-        qStart = int(qMatch[n,0])
-        rStart = int(rMatch[n,0])
-        qEnd = int(qMatch[n,1])
-        rEnd = int(rMatch[n,1])
+    # Iterate over number of matches
+    for n in range(numMatches):
+        qStart = int(qMatch[n][0])
+        rStart = int(rMatch[n][0])
+        qEnd = int(qMatch[n][1])
+        rEnd = int(rMatch[n][1])
 
+        # Generate matrix based on this segment
         V = create_matrix(q[qStart:qEnd], r[rStart:rEnd])
 
+        # Perform alignment on this segment
         _, _, score = needleman_wunsch(V, q[qStart:qEnd], r[rStart:rEnd])
 
+        # Update final score with evaluated segment score
         finalScore += score
-        new_human += q[qStart:qEnd]
-        new_fly += r[rStart:rEnd]
 
-        if n < num_matches-1:
-            qNext = int(qMatch[n+1,0])
-            rNext = int(rMatch[n+1,0])
+        # Update final sequence alignments with processed segments
+        alignQ += q[qStart:qEnd]
+        alignR += r[rStart:rEnd]
 
+        # Continue to next segment
+        if n < numMatches - 1:
+            qNext = int(qMatch[n+1][0])
+            rNext = int(rMatch[n+1][0])
+
+            # Generate matrix based on this segment
             V = create_matrix(q[qEnd:qNext], r[rEnd:rNext])
 
+            # Perform alignment on this segment
             qSeqSegment, rSeqSegment, score = needleman_wunsch(V,
                 q[qEnd:qNext], r[rEnd:rNext])
 
+            # Update final score with evaluated segment score
             finalScore += score
-            new_human += qSeqSegment
-            new_fly += rSeqSegment
 
-        elif n == num_matches-1:
-            new_human += q[qEnd:]
-            new_fly += r[rEnd:]
+            # Update final sequence alignments with processed segments
+            alignQ += qSeqSegment
+            alignR += rSeqSegment
 
-    return (new_human, new_fly, finalScore)
+        # Reached end of matches, append rest of sequence
+        elif n == numMatches - 1:
+            alignQ += q[qEnd:]
+            alignR += r[rEnd:]
+
+    return alignQ, alignR, finalScore
 
 # ============================================================================ #
 # Main function                                                                #
