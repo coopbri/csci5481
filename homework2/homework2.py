@@ -41,19 +41,13 @@ def make_arg_parser():
 def read(file, match=False):
     # Match file (for anchored NW)
     if match:
-        anchor_mat = np.loadtxt(file, dtype='i4')
-
-        # First two columns are for human sequence
-        human_match = anchor_mat[:,:2]
-
-        # Second two columns are for fly sequence
-        fly_match = anchor_mat[:,2:]
-
-        # Assert that the anchor pairs are equal in dimension
-        assert(np.shape(human_match)==np.shape(fly_match))
-
-        # Subtract 1 to account for 0 based indexing
-        return human_match-1, fly_match-1
+        # Load file (with NumPy for convenience)
+        m = np.loadtxt(file)
+        # Human sequence indices (first two columns)
+        human = m[:, 0:2] - 1
+        # Fly sequence indicies (second two columns)
+        fly = m[:, 2:4] - 1
+        return human, fly
 
     # FASTA sequence file
     else:
@@ -62,8 +56,7 @@ def read(file, match=False):
             next(f).rstrip()
             for line in f:
                 parsed += line.rstrip()
-
-    return parsed
+        return parsed
 
 # ============================================================================ #
 # Create similarity matrix for use by Needleman-Wunsch function                #
@@ -97,6 +90,8 @@ def create_matrix(q, r):
 # ============================================================================ #
 # Needleman-Wunsch algorithm                                                   #
 #   (param) V: similarity matrix                                               #
+#   (param) q: query sequence                                                  #
+#   (param) r: reference sequence                                              #
 # ============================================================================ #
 def needleman_wunsch(V, q, r):
     # Initialize alignments as empty strings
@@ -148,10 +143,12 @@ def needleman_wunsch(V, q, r):
 
 # ============================================================================ #
 # Anchored Needleman-Wunsch algorithm                                          #
-#   (param) V: similarity matrix                                               #
-#   (param) match: match file                                                  #
+#   (param) q: query sequence                                                  #
+#   (param) r: reference sequence                                              #
+#   (param) qMatch: query match indices                                        #
+#   (param) rMatch: reference match indicies                                   #
 # ============================================================================ #
-def anchored_nw(V, q, r, qMatch, rMatch):
+def anchored_nw(q, r, qMatch, rMatch):
     finalScore = 0.0
 
     new_human = q[:int(qMatch[0,0])]
@@ -204,17 +201,16 @@ if __name__ == "__main__":
     q = read(args.query)
     r = read(args.reference)
 
-    # Create and fill similarity matrix for Needleman-Wunsch
-    V = create_matrix(q, r)
-
     # Match file provided
     if args.match:
         # Process provided match file
         qMatch, rMatch = read(args.match, match=True)
         # Perform Needleman-Wunsch algorithm (anchored)
-        alignQ, alignR, score = anchored_nw(V, q, r, qMatch, rMatch)
+        alignQ, alignR, score = anchored_nw(q, r, qMatch, rMatch)
     # No match file provided
     else:
+        # Create and fill similarity matrix for Needleman-Wunsch
+        V = create_matrix(q, r)
         # Perform Needleman-Wunsch algorithm (standard)
         alignQ, alignR, score = needleman_wunsch(V, q, r)
 
