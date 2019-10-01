@@ -88,16 +88,15 @@ def needleman_wunsch(V):
     i = len(q)
     j = len(r)
 
-    # Process entire sequences
+    # Process both sequences entirely
     while i > 0 or j > 0:
-        if q[i-1] == r[j-1]:
-            match = MATCH
-        else:
-            match = MISMATCH
+        # Determine match or mismatch score
+        diff = MATCH if q[i-1] == r[j-1] else MISMATCH
 
+        # Both sequences not fully processed
         if (i > 0 and j > 0):
-            # Match found
-            if V[i-1][j-1] == (V[i][j] - match):
+            # Match or mismatch found
+            if V[i-1][j-1] == (V[i][j] - diff):
                 alignQ = q[i-1] + alignQ
                 alignR = r[j-1] + alignR
                 i -= 1
@@ -112,10 +111,12 @@ def needleman_wunsch(V):
                 alignQ = "-" + alignQ
                 alignR = r[j-1] + alignR
                 j -= 1
+        # Query sequence not fully processed
         elif i > 0:
             alignQ = q[i-1] + alignQ
             alignR = "-" + alignR
             i -= 1
+        # Reference sequence not fully processed
         elif j > 0:
             alignQ = "-" + alignQ
             alignR = r[j-1] + alignR
