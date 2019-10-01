@@ -6,6 +6,7 @@
 #   algorithm for sequence alignment.
 
 import numpy as np
+import argparse
 
 # "constant" score values (not really constant, but functionally)
 MATCH = 1
@@ -13,11 +14,44 @@ MISMATCH = -3
 GAP = -2
 
 # ============================================================================ #
+# Command-line argument parser                                                 #
+# ============================================================================ #
+def make_arg_parser():
+    parser = argparse.ArgumentParser(prog='homework2.py',
+                          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-q","--query",
+                      default=argparse.SUPPRESS,
+                      required=True,
+                      help="Path to query fasta [required]")
+    parser.add_argument("-r","--reference",
+                      default=argparse.SUPPRESS,
+                      required=True,
+                      help="Path to reference fasta [required]")
+    parser.add_argument("-m","--match",
+                      default=None,
+                      required=False,
+                      help="Path to matches file [optional]")
+
+    return parser
+
+# ============================================================================ #
+# Read in FASTA sequence file                                                  #
+# ============================================================================ #
+def read(file):
+	parsed = ""
+	with open(file) as f:
+		next(f).rstrip()
+		for lines in f:
+			parsed += lines.rstrip()
+
+	return parsed
+
+# ============================================================================ #
 # Create similarity matrix for use by Needleman-Wunsch function                #
 # ============================================================================ #
-def createMatrix():
+def create_matrix(q, r):
     # Initialize similarity matrix (zero matrix)
-    V = numpy.zeros(len(query)+1, len(ref)+1)
+    V = np.zeros((len(q)+1, len(r)+1))
 
     # Fill row 1 and column 1 with gap penalty values
     for i in range(len(q)+1):
