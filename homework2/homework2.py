@@ -6,6 +6,7 @@
 #   algorithm for sequence alignment.
 
 import numpy as np
+import sys
 import argparse
 
 # "constant" score values (not really constant, but functionally)
@@ -22,11 +23,11 @@ def make_arg_parser():
     parser.add_argument("-q","--query",
                       default=argparse.SUPPRESS,
                       required=True,
-                      help="Path to query fasta [required]")
+                      help="Path to query sequence (FASTA) [required]")
     parser.add_argument("-r","--reference",
                       default=argparse.SUPPRESS,
                       required=True,
-                      help="Path to reference fasta [required]")
+                      help="Path to reference sequence (FASTA) [required]")
     parser.add_argument("-m","--match",
                       default=None,
                       required=False,
@@ -35,16 +36,34 @@ def make_arg_parser():
     return parser
 
 # ============================================================================ #
-# Read in FASTA sequence file                                                  #
+# Read in FASTA sequence file or match file                                    #
 # ============================================================================ #
-def read(file):
-	parsed = ""
-	with open(file) as f:
-		next(f).rstrip()
-		for lines in f:
-			parsed += lines.rstrip()
+def read(file, match=False):
+    # Match file (for anchored NW)
+    if match:
+        anchor_mat = np.loadtxt(file, dtype='i4')
 
-	return parsed
+        # First two columns are for human sequence
+        human_match = anchor_mat[:,:2]
+
+        # Second two columns are for fly sequence
+        fly_match = anchor_mat[:,2:]
+
+        # Assert that the anchor pairs are equal in dimension
+        assert(np.shape(human_match)==np.shape(fly_match))
+
+        # Subtract 1 to account for 0 based indexing
+        return human_match-1, fly_match-1
+
+    # FASTA sequence file
+    else:
+        parsed = ""
+        with open(file) as f:
+            next(f).rstrip()
+            for line in f:
+                parsed += line.rstrip()
+
+    return parsed
 
 # ============================================================================ #
 # Create similarity matrix for use by Needleman-Wunsch function                #
@@ -79,7 +98,7 @@ def create_matrix(q, r):
 # Needleman-Wunsch algorithm                                                   #
 #   (param) V: similarity matrix                                               #
 # ============================================================================ #
-def needleman_wunsch(V):
+def needleman_wunsch(V, q, r):
     # Initialize alignments as empty strings
     alignQ = ""
     alignR = ""
@@ -128,6 +147,52 @@ def needleman_wunsch(V):
     return alignQ, alignR, finalScore
 
 # ============================================================================ #
+# Anchored Needleman-Wunsch algorithm                                          #
+#   (param) V: similarity matrix                                               #
+#   (param) match: match file                                                  #
+# ============================================================================ #
+def anchored_nw(V, q, r, qMatch, rMatch):
+    finalScore = 0.0
+
+    new_human = q[:int(qMatch[0,0])]
+    new_fly = r[:int(rMatch[0,0])]
+    num_matches = np.shape(qMatch)[0]
+
+    for n in range(num_matches):
+        qStart = int(qMatch[n,0])
+        rStart = int(rMatch[n,0])
+        qEnd = int(qMatch[n,1])
+        rEnd = int(rMatch[n,1])
+
+        V = create_matrix(q[qStart:qEnd], r[rStart:rEnd])
+
+        # (tmpscore, _, _) = find_alignments(qMatch[qStart:qEnd], rMatch[rStart:rEnd])
+        (_, _, tmpscore) = needleman_wunsch(V, q[qStart:qEnd], r[rStart:rEnd])
+
+
+        finalScore += tmpscore
+        new_human += q[qStart:qEnd]
+        new_fly += r[rStart:rEnd]
+
+        if n < num_matches-1:
+            qNext = int(qMatch[n+1,0])
+            rNext = int(rMatch[n+1,0])
+
+            V = create_matrix(q[qEnd:qNext], r[rEnd:rNext])
+
+            (tmphseq, tmpfseq, tmpscore) = needleman_wunsch(V, q[qEnd:qNext], r[rEnd:rNext])
+
+            finalScore += tmpscore
+            new_human += tmphseq
+            new_fly += tmpfseq
+
+        elif n == num_matches-1:
+            new_human += q[qEnd:]
+            new_fly += r[rEnd:]
+
+    return (new_human, new_fly, finalScore)
+
+# ============================================================================ #
 # Main function                                                                #
 # ============================================================================ #
 if __name__ == "__main__":
@@ -142,8 +207,16 @@ if __name__ == "__main__":
     # Create and fill similarity matrix for Needleman-Wunsch
     V = create_matrix(q, r)
 
-    # Perform Needleman-Wunsch algorithm
-    alignQ, alignR, score = needleman_wunsch(V)
+    # Match file provided
+    if args.match:
+        # Process provided match file
+        qMatch, rMatch = read(args.match, match=True)
+        # Perform Needleman-Wunsch algorithm (anchored)
+        alignQ, alignR, score = anchored_nw(V, q, r, qMatch, rMatch)
+    # No match file provided
+    else:
+        # Perform Needleman-Wunsch algorithm (standard)
+        alignQ, alignR, score = needleman_wunsch(V, q, r)
 
     # Output alignments and score
     print("Query alignment:     " + alignQ)
