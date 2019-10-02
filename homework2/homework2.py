@@ -263,5 +263,5 @@ if __name__ == "__main__":
     # Output alignments and score if not doing random permutation experiment
     if not args.permute:
         print("Query alignment:     " + alignQ)
-        print("Reference alignment: " + alignR)
+        print("\nReference alignment: " + alignR)
         print("\nFinal score: " + str(score))
