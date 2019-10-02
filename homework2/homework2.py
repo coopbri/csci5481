@@ -34,7 +34,7 @@ def make_arg_parser():
                       help="Path to matches file [optional]")
     parser.add_argument("-p","--permute",
                       default=argparse.SUPPRESS,
-                      requred=False,
+                      required=False,
                       help="Perform a random sequence permutation experiment 10,000 times [optional]")
 
     return parser
