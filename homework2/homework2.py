@@ -5,9 +5,11 @@
 # This file implements the Needleman-Wunsch algorithm for sequence alignment. If
 #   a match file is specified, a modified version (anchored) is executed.
 
-import numpy as np
-import sys
 import argparse
+import matplotlib.pyplot as plt
+import numpy as np
+import string_utils as str
+import sys
 
 # "constant" score values (not really constant, but functionally)
 MATCH = 1
@@ -33,8 +35,9 @@ def make_arg_parser():
                       required=False,
                       help="Path to matches file [optional]")
     parser.add_argument("-p","--permute",
-                      default=argparse.SUPPRESS,
+                      default=None,
                       required=False,
+                      action='store_true',
                       help="Perform a random sequence permutation experiment 10,000 times [optional]")
 
     return parser
@@ -225,12 +228,40 @@ if __name__ == "__main__":
         alignQ, alignR, score = anchored_nw(q, r, qMatch, rMatch)
     # No match file provided
     else:
-        # Create and fill similarity matrix for Needleman-Wunsch
-        V = create_matrix(q, r)
-        # Perform Needleman-Wunsch algorithm (standard)
-        alignQ, alignR, score = needleman_wunsch(V, q, r)
+        # Perform random permutation experiment
+        if args.permute:
+            # List of scores for each experiment run
+            scoreList = []
 
-    # Output alignments and score
-    print("Query alignment:     " + alignQ)
-    print("Reference alignment: " + alignR)
-    print("\nFinal score: " + str(score))
+            # Execute experiment 10,000 times
+            for i in range(20):
+            # for i in range(10001):
+                # Generate random permutation of amino acids in provided sequences
+                qRand = str.shuffle(q)
+                rRand = str.shuffle(r)
+
+                # Create similarity matrix based on random permutation
+                V = create_matrix(qRand, rRand)
+
+                # Perform Needleman-Wunsch alignment on random permutation
+                alignQ, alignR, score = needleman_wunsch(V, qRand, rRand)
+                scoreList.append(score)
+
+            # Generate histogram of scores
+            plt.hist(scoreList, 10, histtype='bar', align='mid', color='c',
+                edgecolor='black')
+            plt.legend()
+            plt.title('Score Histogram (Random Permutations)')
+            plt.show()
+        # Perform regular Needleman-Wunsch algorithm
+        else:
+            # Create and fill similarity matrix for Needleman-Wunsch
+            V = create_matrix(q, r)
+            # Perform Needleman-Wunsch algorithm (standard)
+            alignQ, alignR, score = needleman_wunsch(V, q, r)
+
+    # Output alignments and score if not doing random permutation experiment
+    if not args.permute:
+        print("Query alignment:     " + alignQ)
+        print("Reference alignment: " + alignR)
+        print("\nFinal score: " + str(score))
