@@ -38,7 +38,8 @@ def make_arg_parser():
                       default=None,
                       required=False,
                       action='store_true',
-                      help="Perform a random sequence permutation experiment 10,000 times [optional]")
+                      help="Perform a random sequence permutation experiment"
+                      + " 10,000 times [optional]")
 
     return parser
 
@@ -67,6 +68,8 @@ def read(file, match=False):
 
 # ============================================================================ #
 # Create similarity matrix for use by Needleman-Wunsch function                #
+#   (param) q: query sequence                                                  #
+#   (param) r: reference sequence                                              #
 # ============================================================================ #
 def create_matrix(q, r):
     # Initialize similarity matrix (zero matrix)
@@ -230,7 +233,7 @@ if __name__ == "__main__":
     else:
         # Perform random permutation experiment
         if args.permute:
-            # List of scores for each experiment run
+            # List of scores for all experiment runs
             scoreList = []
 
             # Execute experiment 10,000 times
@@ -244,6 +247,8 @@ if __name__ == "__main__":
 
                 # Perform Needleman-Wunsch alignment on random permutation
                 alignQ, alignR, score = needleman_wunsch(V, qRand, rRand)
+
+                # Add score to list for histogram
                 scoreList.append(score)
 
             # Generate histogram of scores
