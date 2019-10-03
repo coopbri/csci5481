@@ -62,6 +62,7 @@ def read(file, match=False):
         parsed = ""
         with open(file) as f:
             next(f).rstrip()
+            # Parse each line individually
             for line in f:
                 parsed += line.rstrip()
         return parsed
@@ -90,9 +91,13 @@ def create_matrix(q, r):
             else:
                 diag = V[i-1][j-1] + MISMATCH
 
+            # Score from cell to left
             left = V[i][j-1] + GAP
+
+            # Score from row above
             above = V[i-1][j] + GAP
 
+            # Cell is maximum of diagonal score, left score, and above score
             V[i][j] = max(diag, left, above)
 
     return V
@@ -128,20 +133,24 @@ def needleman_wunsch(V, q, r):
             # From left
             elif V[i-1][j] == (V[i][j] - GAP):
                 alignQ = q[i-1] + alignQ
+                # Fill gap on reference
                 alignR = "-" + alignR
                 i -= 1
             # From above
             elif V[i][j-1] == (V[i][j] - GAP):
+                # Fill gap on query
                 alignQ = "-" + alignQ
                 alignR = r[j-1] + alignR
                 j -= 1
         # Query sequence not fully processed
         elif i > 0:
             alignQ = q[i-1] + alignQ
+            # Fill gap on reference
             alignR = "-" + alignR
             i -= 1
         # Reference sequence not fully processed
         elif j > 0:
+            # Fill gap on query
             alignQ = "-" + alignQ
             alignR = r[j-1] + alignR
             j -= 1
@@ -167,6 +176,7 @@ def anchored_nw(q, r, qMatch, rMatch):
 
     # Iterate over number of matches
     for n in range(numMatches):
+        # Store indices for each sequence
         qStart = int(qMatch[n][0])
         rStart = int(rMatch[n][0])
         qEnd = int(qMatch[n][1])
