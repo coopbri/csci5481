@@ -8,7 +8,7 @@
 import argparse
 import matplotlib.pyplot as plt
 import numpy as np
-import string_utils as str
+import string_utils as string
 import sys
 
 # "constant" score values (not really constant, but functionally)
@@ -234,11 +234,10 @@ if __name__ == "__main__":
             scoreList = []
 
             # Execute experiment 10,000 times
-            for i in range(20):
-            # for i in range(10001):
+            for i in range(10001):
                 # Generate random permutation of amino acids in provided sequences
-                qRand = str.shuffle(q)
-                rRand = str.shuffle(r)
+                qRand = string.shuffle(q)
+                rRand = string.shuffle(r)
 
                 # Create similarity matrix based on random permutation
                 V = create_matrix(qRand, rRand)
@@ -248,10 +247,13 @@ if __name__ == "__main__":
                 scoreList.append(score)
 
             # Generate histogram of scores
-            plt.hist(scoreList, 10, histtype='bar', align='mid', color='c',
-                edgecolor='black')
-            plt.legend()
             plt.title('Score Histogram (Random Permutations)')
+            plt.hist(scoreList, 10, histtype="bar", align="mid",
+                color="#66ffff", label="Final alignment score",
+                edgecolor="black")
+            plt.xlabel("Score")
+            plt.ylabel("Frequency")
+            plt.legend()
             plt.show()
         # Perform regular Needleman-Wunsch algorithm
         else:
