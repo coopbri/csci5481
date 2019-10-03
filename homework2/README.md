@@ -2,12 +2,21 @@
 ###### Brian Cooper
 
 ## Background Information
-The file `homework2.py` implements the <a href="https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm">Needleman-Wunsch</a> global sequence alignment algorithm. Provided a proper match text file, it can implement an anchored version of the algorithm which utilizes information about where matches occur in a set of query and reference genomes. This information is provided as a text file.
+The file `homework2.py` implements the <a href="https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm">Needleman-Wunsch</a> global sequence alignment algorithm. Provided a proper match text file, it can implement an anchored version of the algorithm which utilizes information about where matches occur in a set of query and reference genomes. This match information is provided as a text file, with the following format:
+
+```
+query_index_start query_index_end reference_index_start reference_index_end
+```
+
+and can include as many lines following the pattern above as desired. See `Match_HOX.txt`, `Match_PAX.txt`, and `Titin_Match.txt` for examples.
+
 
 ## Running the Program
 #### Vanilla Needleman-Wunsch
 The program can be run as follows:<br>
 `python homework2.py -q path_to_query_sequence.fa -r path_to_reference_sequence.fa`
+
+The sequence files must be in FASTA format, as indicated by the file extensions above.
 
 #### Anchored Needleman-Wunsch
 To run the anchored version, a match file needs to be provided in addition to the query and reference sequences. It can be run with:<br>
