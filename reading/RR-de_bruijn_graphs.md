@@ -3,10 +3,10 @@
 </center>
 
 ### Key points (1-3 sentences)
-  The
+  The paper begins by shortly introducing graph theory and its application to sequencing technology, particularly Hamiltonian cycles and their computational shortcomings (time and space). In response, de Bruijn graphs are proposed as an alternative, which assign k-mers to edges rather than nodes (representing Euler cycles).
 
 ### Added to reading (1-2 sentences)
-  Abc
+  Since we discussed these concepts in class, I had some background knowledge in the reading. However, assuming no background knowledge, I think the article may benefit from a more robust introduction to Hamiltonian and Euler cycles.
 
 ### Question(s)
   Abc
