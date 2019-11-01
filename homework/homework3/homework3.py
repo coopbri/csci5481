@@ -87,6 +87,13 @@ def matrix(ids, seqs):
         for row in matrix:
             f.write("\t".join(map(str, row)) + "\t" + "\n")
 
+    return matrix
+
+# ============================================================================ #
+# Nei-Saitou neighbor-joining algorithm                                        #
+# ============================================================================ #
+# def neighbor():
+
 # ============================================================================ #
 # Main function                                                                #
 # ============================================================================ #
@@ -101,3 +108,15 @@ if __name__ == "__main__":
     # Calculate genetic distance between each pair of sequences in FASTA file
     #   Write resultant distance matrix to file `distances.txt`
     matrix = matrix(ids, seqs)
+
+    # print(matrix)
+    for i in range(0, len(ids)):
+        del matrix[0][i-1]
+    for j in range(0, len(ids)):
+        del matrix[j-1][0]
+
+    # remove sequence identifiers from matrix
+
+    with open("raw.txt", "w") as f:
+        for row in matrix:
+            f.write("\t".join(map(str, row)) + "\t" + "\n")
