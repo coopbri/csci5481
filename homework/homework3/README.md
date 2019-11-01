@@ -1,0 +1,1 @@
+- Run: `python homework3.py -i hw3.fna`
