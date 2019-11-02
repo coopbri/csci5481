@@ -9,6 +9,7 @@ import argparse
 import numpy as np
 import sys
 
+# This is actually 1 more than number of 16S sequences (for code convenience)
 NUM_SEQS = 62
 
 # ============================================================================ #
@@ -48,38 +49,49 @@ def read(file):
 # Calculate genetic distance between two sequences (s1 and s2)                 #
 # ============================================================================ #
 def distance(s1, s2):
+    # Initialize sequence difference as none
     diff = 0
+
+    # Set length as sequence 1's length
     length = len(s1)
 
+    # Iterate over sequence, check base-by-base for differences
     for i in range(length):
         if s1[i] != s2[i]:
             diff += 1
 
     if diff == 0:
+        # Equal sequences; zero difference
         return 0
     else:
+        # Difference found
         return diff / length
 
 # ============================================================================ #
 # Build distance matrix containing pairwise sequence distances                 #
 #   Write resultant matrix to file                                             #
 # ============================================================================ #
-def matrix(ids, seqs, output):
+def matrix(ids, seqs, output=False):
     # Print matrix to file with sequence identifiers
     if output:
+        # Length is number of sequence identifiers + 1
         length = len(ids) + 1
 
         # Generate empty matrix
         matrix = [[(0) for x in range(length)] for y in range(length)]
+
+        # Format beginning of matrix
         matrix[0][0] = ""
 
-        # Fill matrix with sequence identifiers
+        # Fill matrix with sequence identifiers: top row
         for i in range(1, length):
             matrix[0][i] = ids[i-1]
+
+        # Fill matrix with sequence identifiers: left column
         for j in range(1, length):
             matrix[j][0] = ids[j-1]
 
-        # Fill matrix with pairwise sequence distances
+        # Fill matrix with pairwise sequence distances using `distance` method
         for m in range(1, length):
             for n in range(1, length):
                 matrix[m][n] = distance(seqs[m-1], seqs[n-1])
@@ -90,8 +102,13 @@ def matrix(ids, seqs, output):
                 f.write("\t".join(map(str, row)) + "\t" + "\n")
     # Generate distance matrix without sequence identifiers
     else:
+        # Length is number of sequence identifiers
         length = len(ids)
+
+        # Generate empty matrix
         matrix = [[(0) for x in range(length)] for y in range(length)]
+
+        # Fill matrix with pairwise sequence distances using `distance` method
         for m in range(length):
             for n in range(length):
                 matrix[m][n] = distance(seqs[m], seqs[n])
@@ -256,7 +273,7 @@ if __name__ == "__main__":
     m = matrix(ids, seqs, True)
 
     # Generate similar matrix with no output and no sequence identifiers
-    m = matrix(ids, seqs, False)
+    m = matrix(ids, seqs)
 
     # Perform Nei-Saitou neighbor-joining algorithm using distance matrix
     result = neighbor(m)
