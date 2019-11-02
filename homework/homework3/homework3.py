@@ -201,34 +201,19 @@ def neighbor(matrix):
     return dic
 
 # ============================================================================ #
-# Preorder traversal of tree                                                   #
-# ============================================================================ #
-def preorder(root,d):
-    result = []
-    if d[root] != None:
-        for child, distance in d[root]:
-            result.append((root, child, distance))
-            # Recursively traverse through tree
-            result = result + preorder(child, d)
-    return result
-
-# ============================================================================ #
-# Postorder traversal of tree                                                  #
-# ============================================================================ #
-def postorder(d, root, lst1):
-    lst = []
-    if d[root] == None:
-        return lst1[root-1]
-    for key, value in d[root]:
-        # Recursively traverse through tree
-        lst.append((postorder(d, key, lst1) + ":" + str(value)))
-    result = '(' + ','.join(lst) + ')'
-    return result
-
-# ============================================================================ #
 # Determine tree edges; use preorder traversal                                 #
 # ============================================================================ #
 def edges(result):
+    # Preorder traversal of tree
+    def preorder(root, d):
+        result = []
+        if d[root] != None:
+            for child, distance in d[root]:
+                result.append((root, child, distance))
+                # Recursively traverse through tree
+                result = result + preorder(child, d)
+        return result
+
     # Write to file (edges)
     with open("edges.txt","w") as f:
         for parent, child, dist in preorder(62, result):
@@ -238,6 +223,17 @@ def edges(result):
 # Newick format of edge distances; use postorder traversal                     #
 # ============================================================================ #
 def newick(d, root, lst1):
+    # Postorder traversal of tree
+    def postorder(d, root, lst1):
+        lst = []
+        if d[root] == None:
+            return lst1[root-1]
+        for key, value in d[root]:
+            # Recursively traverse through tree
+            lst.append((postorder(d, key, lst1) + ":" + str(value)))
+        result = '(' + ','.join(lst) + ')'
+        return result
+
     # Write to file (Newick format of edges)
     with open('tree.txt', 'w') as f:
         f.write(postorder(d,root,lst1) + ";")
