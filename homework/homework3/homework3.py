@@ -3,7 +3,7 @@
 # Code by Brian Cooper
 #
 # This file implements the Nei-Saitou neighbor-joining algorithm for phylogeny
-#   construction. Bootstrap estimation is supported.
+#   construction.
 
 import argparse
 import numpy as np
@@ -124,7 +124,7 @@ def neighbor(matrix):
         q = {}
         for i, j in dict:
             if i != j:
-                q[i, j] = (n-2) * dict[i, j] \
+                q[i, j] = (n - 2) * dict[i, j] \
                     - sum([dict[i, node] for node in nodes]) \
                         - sum([dict[j, node] for node in nodes])
             else:
@@ -141,18 +141,18 @@ def neighbor(matrix):
 
         # calculate distances
         dist = {}
-        dist[iMin, x] = (dict[iMin, jMin]) / 2 + (1/(2*(n-2))) \
+        dist[iMin, x] = (dict[iMin, jMin]) / 2 + (1 / (2 * (n - 2))) \
             * (sum([dict[iMin, node] for node in nodes]) \
                 - sum([dict[jMin, node] for node in nodes]))
         dist[jMin, x] = dict[iMin, jMin] - dist[iMin, x]
 
         # add to result based on node
         if iMin <= NUM_SEQS - 1:
-            result.append((x, iMin+1, dist[iMin, x]))
+            result.append((x, iMin + 1, dist[iMin, x]))
         else:
             result.append((x, iMin, dist[iMin, x]))
         if jMin <= NUM_SEQS - 1:
-            result.append((x, jMin+1, dist[jMin, x]))
+            result.append((x, jMin + 1, dist[jMin, x]))
         else:
             result.append((x, jMin, dist[jMin, x]))
 
@@ -228,18 +228,17 @@ def edges(result):
 def newick(d, root, lst1):
     # Postorder traversal of tree
     def postorder(d, root, lst1):
-        lst = []
+        result = []
         if d[root] == None:
-            return lst1[root-1]
+            return lst1[root - 1]
         for key, value in d[root]:
             # Recursively traverse through tree
-            lst.append((postorder(d, key, lst1) + ":" + str(value)))
-        result = '(' + ','.join(lst) + ')'
-        return result
+            result.append((postorder(d, key, lst1) + ":" + str(value)))
+        return '(' + ','.join(result) + ')'
 
     # Write to file (Newick format of edges)
     with open('tree.txt', 'w') as f:
-        f.write(postorder(d,root,lst1) + ";")
+        f.write(postorder(d, root, lst1) + ";")
 
 # ============================================================================ #
 # Main function                                                                #
@@ -259,7 +258,7 @@ if __name__ == "__main__":
     # Generate similar matrix with no output and no sequence identifiers
     m = matrix(ids, seqs, False)
 
-    # Perform neighbor-joining algorithm with distance matrix
+    # Perform Nei-Saitou neighbor-joining algorithm using distance matrix
     result = neighbor(m)
 
     # Write edges to file using preorder traversal
