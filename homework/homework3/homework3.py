@@ -64,35 +64,183 @@ def distance(s1, s2):
 # Build distance matrix containing pairwise sequence distances                 #
 #   Write resultant matrix to file                                             #
 # ============================================================================ #
-def matrix(ids, seqs):
-    length = len(ids) + 1
+def matrix(ids, seqs, output):
+    # Print matrix to file with sequence identifiers
+    if output:
+        length = len(ids) + 1
 
-    # Generate empty matrix
-    matrix = [[(0) for x in range(length)] for y in range(length)]
-    matrix[0][0] = ""
+        # Generate empty matrix
+        matrix = [[(0) for x in range(length)] for y in range(length)]
+        matrix[0][0] = ""
 
-    # Fill matrix with sequence identifiers
-    for i in range(1, length):
-        matrix[0][i] = ids[i-1]
-    for j in range(1, length):
-        matrix[j][0] = ids[j-1]
+        # Fill matrix with sequence identifiers
+        for i in range(1, length):
+            matrix[0][i] = ids[i-1]
+        for j in range(1, length):
+            matrix[j][0] = ids[j-1]
 
-    # Fill matrix with pairwise sequence distances
-    for m in range(1, length):
-        for n in range(1, length):
-            matrix[m][n] = distance(seqs[m-1], seqs[n-1])
+        # Fill matrix with pairwise sequence distances
+        for m in range(1, length):
+            for n in range(1, length):
+                matrix[m][n] = distance(seqs[m-1], seqs[n-1])
 
-    # Write matrix to file
-    with open("distances.txt", "w") as f:
-        for row in matrix:
-            f.write("\t".join(map(str, row)) + "\t" + "\n")
+        # Write matrix to file
+        with open("distances.txt", "w") as f:
+            for row in matrix:
+                f.write("\t".join(map(str, row)) + "\t" + "\n")
+    # Generate distance matrix without sequence identifiers
+    else:
+        length = len(ids)
+        matrix = [[(0) for x in range(length)] for y in range(length)]
+        for m in range(length):
+            for n in range(length):
+                matrix[m][n] = distance(seqs[m], seqs[n])
 
     return matrix
 
 # ============================================================================ #
 # Nei-Saitou neighbor-joining algorithm                                        #
 # ============================================================================ #
-# def neighbor():
+def neighbor(matrix):
+    #start node
+    u = 120
+    #convert node id to a list
+    node = list(range(len(matrix)))
+    result = []
+    n = len(matrix)
+
+    #convert matrix to dictionary for quick lookup and easy manipulation
+    matrix_dict = {}
+    for i in range(n):
+        for j in range(n):
+            matrix_dict[i,j] = matrix[i][j]
+
+    distance = {}
+    while(n > 2):
+        q_matrix = {}
+
+        # build dictionary with distances
+        for i, j in matrix_dict:
+            if i != j:
+                q_matrix[i,j] = (n-2) * matrix_dict[i, j] \
+                    - sum([matrix_dict[i, k] for k in node]) \
+                        - sum([matrix_dict[j, k] for k in node])
+            else:
+                q_matrix[i,j] = 0
+
+        # find minimum value and its corresponding nodes
+        min = 99999
+        iMin = 0
+        jMin = 0
+
+        for i, j in q_matrix:
+            if q_matrix[i,j] < min:
+                min = q_matrix[i,j]
+                iMin = i
+                jMin = j
+
+        # calculate distances
+        distance[iMin, u] = (matrix_dict[iMin, jMin]) / 2 + (1/(2*(n-2))) \
+            * (sum([matrix_dict[iMin, k] for k in node]) \
+                - sum([matrix_dict[jMin, k] for k in node]))
+        distance[jMin, u] = matrix_dict[iMin, jMin] - distance[iMin, u]
+
+        # add to result based on node
+        if iMin <= 61:
+            result.append((u, iMin+1, distance[iMin, u]))
+        else:
+            result.append((u, iMin, distance[iMin, u]))
+        if jMin<=61:
+            result.append((u, jMin+1, distance[jMin, u]))
+        else:
+            result.append((u, jMin, distance[jMin, u]))
+
+        # update matrix with new distances
+        for k in node:
+            if k != iMin:
+                if k != jMin:
+                    matrix_dict[u, k] = 0.5 * (matrix_dict[iMin, k] \
+                        + matrix_dict[jMin, k]-matrix_dict[iMin, jMin])
+                    matrix_dict[k, u] = matrix_dict[u, k]
+
+        matrix_dict[u,u] = 0
+
+        for i,j in matrix_dict.copy():
+            # delete unnecessary values
+            if i == iMin or i == jMin or j == iMin or j == jMin:
+                del matrix_dict[i, j]
+
+        # add new node to list, delete merged node
+        node.append(u)
+        node.remove(iMin)
+        node.remove(jMin)
+
+        # update node id and matrix length
+        u = u-1
+        n = n-1
+
+    for k in range(len(result)):
+        if result[k][0] == 63:
+            result[k] = (62, result[k][1], result[k][2])
+        if result[k][0] == 62:
+            result[k] = (63, result[k][1], result[k][2])
+
+    # only two nodes: add to result
+    result.append((node[1], node[0], matrix_dict[node[0], node[1]]))
+
+    # convert tuple list to dictionary
+    dic = {}
+    for parent, child, distance in result:
+        if child not in dic:
+            dic[child] = None
+        if parent not in dic:
+            dic[parent] = [(child, distance)]
+        else:
+            dic[parent].append((child, distance))
+
+    return dic
+
+# ============================================================================ #
+# Preorder traversal of tree                                                   #
+# ============================================================================ #
+def preorder(root,d):
+    result = []
+    if d[root] != None:
+        for child, distance in d[root]:
+            result.append((root, child, distance))
+            # Recursively traverse through tree
+            result = result + preorder(child, d)
+    return result
+
+# ============================================================================ #
+# Postorder traversal of tree                                                  #
+# ============================================================================ #
+def postorder(d, root, lst1):
+    lst = []
+    if d[root] == None:
+        return lst1[root-1]
+    for key, value in d[root]:
+        # Recursively traverse through tree
+        lst.append((postorder(d, key, lst1) + ":" + str(value)))
+    result = '(' + ','.join(lst) + ')'
+    return result
+
+# ============================================================================ #
+# Determine tree edges; use preorder traversal                                 #
+# ============================================================================ #
+def edges(result):
+    # Write to file (edges)
+    with open("edges.txt","w") as f:
+        for parent, child, dist in preorder(62, result):
+            f.write(str(parent) + "\t" + str(child) + "\t" + str(dist) + "\n")
+
+# ============================================================================ #
+# Newick format of edge distances; use postorder traversal                     #
+# ============================================================================ #
+def newick(d, root, lst1):
+    # Write to file (Newick format of edges)
+    with open('tree.txt', 'w') as f:
+        f.write(postorder(d,root,lst1) + ";")
 
 # ============================================================================ #
 # Main function                                                                #
@@ -107,16 +255,16 @@ if __name__ == "__main__":
 
     # Calculate genetic distance between each pair of sequences in FASTA file
     #   Write resultant distance matrix to file `distances.txt`
-    matrix = matrix(ids, seqs)
+    m = matrix(ids, seqs, True)
 
-    # print(matrix)
-    for i in range(0, len(ids)):
-        del matrix[0][i-1]
-    for j in range(0, len(ids)):
-        del matrix[j-1][0]
+    # Generate similar matrix with no output and no sequence identifiers
+    m = matrix(ids, seqs, False)
 
-    # remove sequence identifiers from matrix
+    # Perform neighbor-joining algorithm with distance matrix
+    result = neighbor(m)
 
-    with open("raw.txt", "w") as f:
-        for row in matrix:
-            f.write("\t".join(map(str, row)) + "\t" + "\n")
+    # Write edges to file using preorder traversal
+    edges(result)
+
+    # Write edges to file (Newick format) using postorder traversal
+    newick(result, 62, ids)
