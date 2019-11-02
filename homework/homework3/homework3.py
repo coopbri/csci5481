@@ -225,13 +225,17 @@ def neighbor(matrix):
 # ============================================================================ #
 def edges(result):
     # Preorder traversal of tree
-    def preorder(root, d):
+    def preorder(root, tree):
+        # Initialize resulting traversal (empty)
         result = []
-        if d[root] != None:
-            for child, dist in d[root]:
+
+        # Only progress if root is not empty
+        if tree[root] != None:
+            for child, dist in tree[root]:
                 result.append((root, child, dist))
                 # Recursively traverse through tree
-                result = result + preorder(child, d)
+                result = result + preorder(child, tree)
+
         return result
 
     # Write to file (edges)
@@ -242,44 +246,51 @@ def edges(result):
 # ============================================================================ #
 # Newick format of edge distances; use postorder traversal                     #
 # ============================================================================ #
-def newick(d, root, lst1):
+def newick(tree, root, ids):
     # Postorder traversal of tree
-    def postorder(d, root, lst1):
+    def postorder(tree, root, ids):
+        # Initialize resulting traversal (empty)
         result = []
-        if d[root] == None:
-            return lst1[root - 1]
-        for key, value in d[root]:
+
+        # Handle empty root case
+        if tree[root] == None:
+            return ids[root - 1]
+
+        for key, value in tree[root]:
             # Recursively traverse through tree
-            result.append((postorder(d, key, lst1) + ":" + str(value)))
+            result.append((postorder(tree, key, ids) + ":" + str(value)))
+
+        # Convert result to Newick format
         return '(' + ','.join(result) + ')'
 
     # Write to file (Newick format of edges)
     with open('tree.txt', 'w') as f:
-        f.write(postorder(d, root, lst1) + ";")
+        f.write(postorder(tree, root, ids) + ";")
 
 # ============================================================================ #
 # Main function                                                                #
 # ============================================================================ #
 if __name__ == "__main__":
-    # Handle command line parameters
+    # Handle command line input
     parser = make_arg_parser()
     args = parser.parse_args()
 
     # Read FASTA sequence file
     ids, seqs = read(args.sequence)
 
-    # Calculate genetic distance between each pair of sequences in FASTA file
-    #   Write resultant distance matrix to file `distances.txt`
+    # Calculate genetic distance between each pair of sequences in FASTA file,
+    #   write resultant distance matrix to file `distances.txt`
     m = matrix(ids, seqs, True)
 
     # Generate similar matrix with no output and no sequence identifiers
     m = matrix(ids, seqs)
 
-    # Perform Nei-Saitou neighbor-joining algorithm using distance matrix
-    result = neighbor(m)
+    # Perform Nei-Saitou neighbor-joining algorithm using distance matrix to
+    #   generate phylogenetic tree
+    tree = neighbor(m)
 
     # Write edges to file using preorder traversal
-    edges(result)
+    edges(tree)
 
     # Write edges to file (Newick format) using postorder traversal
-    newick(result, NUM_SEQS, ids)
+    newick(tree, NUM_SEQS, ids)
