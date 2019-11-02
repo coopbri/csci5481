@@ -164,11 +164,11 @@ def neighbor(matrix):
 
                 dict[node, x] = dict[x, node]
 
-        # set first slot to 0
+        # set diagonal slot distance (same identifier) to 0
         dict[x, x] = 0
 
         for i, j in dict.copy():
-            # delete unnecessary values
+            # delete minimum values
             if i == iMin or i == jMin or j == iMin or j == jMin:
                 del dict[i, j]
 
@@ -191,17 +191,17 @@ def neighbor(matrix):
     # only two nodes: add to result
     result.append((nodes[1], nodes[0], dict[nodes[0], nodes[1]]))
 
-    # convert tuple list to dictionary
-    dic = {}
+    # use neighbor-joining result to create graph (stored as dictionary)
+    graph = {}
     for parent, child, dist in result:
-        if child not in dic:
-            dic[child] = None
-        if parent not in dic:
-            dic[parent] = [(child, dist)]
+        if child not in graph:
+            graph[child] = None
+        if parent not in graph:
+            graph[parent] = [(child, dist)]
         else:
-            dic[parent].append((child, dist))
+            graph[parent].append((child, dist))
 
-    return dic
+    return graph
 
 # ============================================================================ #
 # Determine tree edges; use preorder traversal                                 #
