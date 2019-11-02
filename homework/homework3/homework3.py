@@ -6,9 +6,7 @@
 #   construction. Bootstrap estimation is supported.
 
 import argparse
-# import matplotlib.pyplot as plt
 import numpy as np
-# import string_utils as string
 import sys
 
 # ============================================================================ #
@@ -102,55 +100,58 @@ def matrix(ids, seqs, output):
 # Nei-Saitou neighbor-joining algorithm                                        #
 # ============================================================================ #
 def neighbor(matrix):
-    #start node
+    # start node
     u = 120
-    #convert node id to a list
+
+    # store nodes in list
     node = list(range(len(matrix)))
-    result = []
+
+    # length of matrix
     n = len(matrix)
 
-    #convert matrix to dictionary for quick lookup and easy manipulation
-    matrix_dict = {}
+    # store matrix data as dictionary
+    dict = {}
     for i in range(n):
         for j in range(n):
-            matrix_dict[i,j] = matrix[i][j]
+            dict[i, j] = matrix[i][j]
 
-    distance = {}
-    while(n > 2):
-        q_matrix = {}
-
-        # build dictionary with distances
-        for i, j in matrix_dict:
+    # continue while there are more distances to process
+    result = []
+    while n > 2:
+        # build Q-matrix based on distances
+        q = {}
+        for i, j in dict:
             if i != j:
-                q_matrix[i,j] = (n-2) * matrix_dict[i, j] \
-                    - sum([matrix_dict[i, k] for k in node]) \
-                        - sum([matrix_dict[j, k] for k in node])
+                q[i, j] = (n-2) * dict[i, j] \
+                    - sum([dict[i, k] for k in node]) \
+                        - sum([dict[j, k] for k in node])
             else:
-                q_matrix[i,j] = 0
+                q[i, j] = 0
 
         # find minimum value and its corresponding nodes
         min = 99999
         iMin = 0
         jMin = 0
 
-        for i, j in q_matrix:
-            if q_matrix[i,j] < min:
-                min = q_matrix[i,j]
+        for i, j in q:
+            if q[i,j] < min:
+                min = q[i,j]
                 iMin = i
                 jMin = j
 
         # calculate distances
-        distance[iMin, u] = (matrix_dict[iMin, jMin]) / 2 + (1/(2*(n-2))) \
-            * (sum([matrix_dict[iMin, k] for k in node]) \
-                - sum([matrix_dict[jMin, k] for k in node]))
-        distance[jMin, u] = matrix_dict[iMin, jMin] - distance[iMin, u]
+        distance = {}
+        distance[iMin, u] = (dict[iMin, jMin]) / 2 + (1/(2*(n-2))) \
+            * (sum([dict[iMin, k] for k in node]) \
+                - sum([dict[jMin, k] for k in node]))
+        distance[jMin, u] = dict[iMin, jMin] - distance[iMin, u]
 
         # add to result based on node
         if iMin <= 61:
             result.append((u, iMin+1, distance[iMin, u]))
         else:
             result.append((u, iMin, distance[iMin, u]))
-        if jMin<=61:
+        if jMin <= 61:
             result.append((u, jMin+1, distance[jMin, u]))
         else:
             result.append((u, jMin, distance[jMin, u]))
@@ -159,16 +160,16 @@ def neighbor(matrix):
         for k in node:
             if k != iMin:
                 if k != jMin:
-                    matrix_dict[u, k] = 0.5 * (matrix_dict[iMin, k] \
-                        + matrix_dict[jMin, k]-matrix_dict[iMin, jMin])
-                    matrix_dict[k, u] = matrix_dict[u, k]
+                    dict[u, k] = 0.5 * (dict[iMin, k] \
+                        + dict[jMin, k]-dict[iMin, jMin])
+                    dict[k, u] = dict[u, k]
 
-        matrix_dict[u,u] = 0
+        dict[u, u] = 0
 
-        for i,j in matrix_dict.copy():
+        for i, j in dict.copy():
             # delete unnecessary values
             if i == iMin or i == jMin or j == iMin or j == jMin:
-                del matrix_dict[i, j]
+                del dict[i, j]
 
         # add new node to list, delete merged node
         node.append(u)
@@ -186,7 +187,7 @@ def neighbor(matrix):
             result[k] = (63, result[k][1], result[k][2])
 
     # only two nodes: add to result
-    result.append((node[1], node[0], matrix_dict[node[0], node[1]]))
+    result.append((node[1], node[0], dict[node[0], node[1]]))
 
     # convert tuple list to dictionary
     dic = {}
