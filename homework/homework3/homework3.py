@@ -9,6 +9,8 @@ import argparse
 import numpy as np
 import sys
 
+NUM_SEQS = 62
+
 # ============================================================================ #
 # Command-line argument parser                                                 #
 # ============================================================================ #
@@ -129,32 +131,31 @@ def neighbor(matrix):
                 q[i, j] = 0
 
         # find minimum value and its corresponding nodes
-        min = 99999
-        iMin = 0
-        jMin = 0
-
+        min = iMin = jMin = 0
+        # iterate over Q-matrix
         for i, j in q:
-            if q[i,j] < min:
-                min = q[i,j]
+            # Update minimum value if new minimum found
+            if q[i, j] < min:
+                min = q[i, j]
                 iMin = i
                 jMin = j
 
         # calculate distances
-        distance = {}
-        distance[iMin, u] = (dict[iMin, jMin]) / 2 + (1/(2*(n-2))) \
+        dist = {}
+        dist[iMin, u] = (dict[iMin, jMin]) / 2 + (1/(2*(n-2))) \
             * (sum([dict[iMin, k] for k in node]) \
                 - sum([dict[jMin, k] for k in node]))
-        distance[jMin, u] = dict[iMin, jMin] - distance[iMin, u]
+        dist[jMin, u] = dict[iMin, jMin] - dist[iMin, u]
 
         # add to result based on node
-        if iMin <= 61:
-            result.append((u, iMin+1, distance[iMin, u]))
+        if iMin <= NUM_SEQS - 1:
+            result.append((u, iMin+1, dist[iMin, u]))
         else:
-            result.append((u, iMin, distance[iMin, u]))
-        if jMin <= 61:
-            result.append((u, jMin+1, distance[jMin, u]))
+            result.append((u, iMin, dist[iMin, u]))
+        if jMin <= NUM_SEQS - 1:
+            result.append((u, jMin+1, dist[jMin, u]))
         else:
-            result.append((u, jMin, distance[jMin, u]))
+            result.append((u, jMin, dist[jMin, u]))
 
         # update matrix with new distances
         for k in node:
@@ -171,33 +172,33 @@ def neighbor(matrix):
             if i == iMin or i == jMin or j == iMin or j == jMin:
                 del dict[i, j]
 
-        # add new node to list, delete merged node
+        # add new node to list, delete joined node
         node.append(u)
         node.remove(iMin)
         node.remove(jMin)
 
-        # update node id and matrix length
-        u = u-1
-        n = n-1
+        # move to next node and matrix location
+        u -= 1
+        n -= 1
 
     for k in range(len(result)):
-        if result[k][0] == 63:
-            result[k] = (62, result[k][1], result[k][2])
-        if result[k][0] == 62:
-            result[k] = (63, result[k][1], result[k][2])
+        if result[k][0] == NUM_SEQS + 1:
+            result[k] = (NUM_SEQS, result[k][1], result[k][2])
+        if result[k][0] == NUM_SEQS:
+            result[k] = (NUM_SEQS + 1, result[k][1], result[k][2])
 
     # only two nodes: add to result
     result.append((node[1], node[0], dict[node[0], node[1]]))
 
     # convert tuple list to dictionary
     dic = {}
-    for parent, child, distance in result:
+    for parent, child, dist in result:
         if child not in dic:
             dic[child] = None
         if parent not in dic:
-            dic[parent] = [(child, distance)]
+            dic[parent] = [(child, dist)]
         else:
-            dic[parent].append((child, distance))
+            dic[parent].append((child, dist))
 
     return dic
 
@@ -209,15 +210,15 @@ def edges(result):
     def preorder(root, d):
         result = []
         if d[root] != None:
-            for child, distance in d[root]:
-                result.append((root, child, distance))
+            for child, dist in d[root]:
+                result.append((root, child, dist))
                 # Recursively traverse through tree
                 result = result + preorder(child, d)
         return result
 
     # Write to file (edges)
     with open("edges.txt","w") as f:
-        for parent, child, dist in preorder(62, result):
+        for parent, child, dist in preorder(NUM_SEQS, result):
             f.write(str(parent) + "\t" + str(child) + "\t" + str(dist) + "\n")
 
 # ============================================================================ #
@@ -264,4 +265,4 @@ if __name__ == "__main__":
     edges(result)
 
     # Write edges to file (Newick format) using postorder traversal
-    newick(result, 62, ids)
+    newick(result, NUM_SEQS, ids)
