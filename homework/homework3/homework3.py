@@ -5,9 +5,14 @@
 # This file implements the Nei-Saitou neighbor-joining algorithm for phylogeny
 #   construction.
 
+# Algorithm source (for equations, etc.):
+#   https://en.wikipedia.org/wiki/Neighbor_joining
+
+# Imports
+#   argparse: handle command-line arguments
+#   math:     useful math functions
 import argparse
-import numpy as np
-import sys
+import math
 
 # This is actually 1 more than number of 16S sequences (for code convenience)
 NUM_SEQS = 62
@@ -141,13 +146,15 @@ def neighbor(matrix):
         q = {}
         for i, j in dict:
             if i != j:
-                q[i, j] = (n - 2) * dict[i, j] \
+                # Use Q-matrix equation from source (Wikipedia) to fill Q-matrix
+                q[i, j] = (n-2) * dict[i, j] \
                     - sum([dict[i, node] for node in nodes]) \
                         - sum([dict[j, node] for node in nodes])
             else:
+                # i == j, set slot to zero
                 q[i, j] = 0
 
-        # find minimum value and its corresponding nodes (iterate over Q-matrix)
+        # find minimum value and corresponding nodes (iterate over Q-matrix)
         min = iMin = jMin = 0
         for i, j in q:
             # Update minimum value if new minimum found
@@ -156,37 +163,47 @@ def neighbor(matrix):
                 iMin = i
                 jMin = j
 
-        # calculate distances
+        # calculate distances from pair members (i, j) to new node,
+        #   store in dictionary
         dist = {}
-        dist[iMin, x] = (dict[iMin, jMin]) / 2 + (1 / (2 * (n - 2))) \
+
+        # Use equation from source (Wikipedia) to find distances
+        dist[iMin, x] = ((1/2) * dict[iMin, jMin]) + (math.pow(2 * (n-2), -1)) \
             * (sum([dict[iMin, node] for node in nodes]) \
                 - sum([dict[jMin, node] for node in nodes]))
+
+        # Use equation from source (Wikipedia) to find difference
         dist[jMin, x] = dict[iMin, jMin] - dist[iMin, x]
 
-        # add to result based on node
-        if iMin <= NUM_SEQS - 1:
-            result.append((x, iMin + 1, dist[iMin, x]))
-        else:
+        # add tuples to result based on node, checking if location of minimum
+        #   exceeds number of sequences
+        if iMin >= NUM_SEQS:
             result.append((x, iMin, dist[iMin, x]))
-        if jMin <= NUM_SEQS - 1:
-            result.append((x, jMin + 1, dist[jMin, x]))
         else:
+            result.append((x, iMin + 1, dist[iMin, x]))
+        if jMin >= NUM_SEQS:
             result.append((x, jMin, dist[jMin, x]))
+        else:
+            result.append((x, jMin + 1, dist[jMin, x]))
 
-        # update matrix with new distances
+
+        # set diagonal slot distance (same sequence identifier) to 0, since
+        #   these are the same sequences
+        dict[x, x] = 0
+
+        # update matrix with new distances; distance of other taxa from new node
         for node in nodes:
             if node != iMin and node != jMin:
-                dict[x, node] = 0.5 * (dict[iMin, node] \
-                    + dict[jMin, node]-dict[iMin, jMin])
+                # Use equation from source (Wikipedia) to find distances
+                dict[x, node] = (1/2) * (dict[iMin, node] \
+                    + dict[jMin, node] - dict[iMin, jMin])
 
                 dict[node, x] = dict[x, node]
 
-        # set diagonal slot distance (same identifier) to 0
-        dict[x, x] = 0
-
+        # copy dictionary to prevent "size-changing during iteration" error
         for i, j in dict.copy():
-            # delete minimum values
-            if i == iMin or i == jMin or j == iMin or j == jMin:
+            # delete nodes that match minimum values
+            if i in {iMin, jMin} or j in {iMin, jMin}:
                 del dict[i, j]
 
         # add new node to list
@@ -195,26 +212,31 @@ def neighbor(matrix):
         # Delete min nodes
         nodes = [node for node in nodes if node not in {iMin, jMin}]
 
-        # move to next node and matrix location
+        # move to next node and matrix location, using new node in place of
+        #   joined neighbors and updated distances
         x -= 1
         n -= 1
 
+    # Handle edge cases for each component of result
     for node in range(len(result)):
         if result[node][0] == NUM_SEQS + 1:
             result[node] = (NUM_SEQS, result[node][1], result[node][2])
         if result[node][0] == NUM_SEQS:
             result[node] = (NUM_SEQS + 1, result[node][1], result[node][2])
 
-    # only two nodes: add to result
+    # only two nodes: add tuple to result list
     result.append((nodes[1], nodes[0], dict[nodes[0], nodes[1]]))
 
     # use neighbor-joining result to create graph (stored as dictionary)
     graph = {}
     for parent, child, dist in result:
+        # Handle child not in tree case
         if child not in graph:
             graph[child] = None
+        # Handle parent not in tree case
         if parent not in graph:
             graph[parent] = [(child, dist)]
+        # Append if in tree
         else:
             graph[parent].append((child, dist))
 
