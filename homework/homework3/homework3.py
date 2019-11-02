@@ -102,11 +102,8 @@ def matrix(ids, seqs, output):
 # Nei-Saitou neighbor-joining algorithm                                        #
 # ============================================================================ #
 def neighbor(matrix):
-    # start node
-    u = 120
-
     # store nodes in list
-    node = list(range(len(matrix)))
+    nodes = list(range(len(matrix)))
 
     # length of matrix
     n = len(matrix)
@@ -117,7 +114,10 @@ def neighbor(matrix):
         for j in range(n):
             dict[i, j] = matrix[i][j]
 
-    # continue while there are more distances to process
+    # start node (at end of matrix)
+    x = (NUM_SEQS - 2) * 2
+
+    # perform algorithm while there are more distances to process
     result = []
     while n > 2:
         # build Q-matrix based on distances
@@ -125,14 +125,13 @@ def neighbor(matrix):
         for i, j in dict:
             if i != j:
                 q[i, j] = (n-2) * dict[i, j] \
-                    - sum([dict[i, k] for k in node]) \
-                        - sum([dict[j, k] for k in node])
+                    - sum([dict[i, node] for node in nodes]) \
+                        - sum([dict[j, node] for node in nodes])
             else:
                 q[i, j] = 0
 
-        # find minimum value and its corresponding nodes
+        # find minimum value and its corresponding nodes (iterate over Q-matrix)
         min = iMin = jMin = 0
-        # iterate over Q-matrix
         for i, j in q:
             # Update minimum value if new minimum found
             if q[i, j] < min:
@@ -142,53 +141,55 @@ def neighbor(matrix):
 
         # calculate distances
         dist = {}
-        dist[iMin, u] = (dict[iMin, jMin]) / 2 + (1/(2*(n-2))) \
-            * (sum([dict[iMin, k] for k in node]) \
-                - sum([dict[jMin, k] for k in node]))
-        dist[jMin, u] = dict[iMin, jMin] - dist[iMin, u]
+        dist[iMin, x] = (dict[iMin, jMin]) / 2 + (1/(2*(n-2))) \
+            * (sum([dict[iMin, node] for node in nodes]) \
+                - sum([dict[jMin, node] for node in nodes]))
+        dist[jMin, x] = dict[iMin, jMin] - dist[iMin, x]
 
         # add to result based on node
         if iMin <= NUM_SEQS - 1:
-            result.append((u, iMin+1, dist[iMin, u]))
+            result.append((x, iMin+1, dist[iMin, x]))
         else:
-            result.append((u, iMin, dist[iMin, u]))
+            result.append((x, iMin, dist[iMin, x]))
         if jMin <= NUM_SEQS - 1:
-            result.append((u, jMin+1, dist[jMin, u]))
+            result.append((x, jMin+1, dist[jMin, x]))
         else:
-            result.append((u, jMin, dist[jMin, u]))
+            result.append((x, jMin, dist[jMin, x]))
 
         # update matrix with new distances
-        for k in node:
-            if k != iMin:
-                if k != jMin:
-                    dict[u, k] = 0.5 * (dict[iMin, k] \
-                        + dict[jMin, k]-dict[iMin, jMin])
-                    dict[k, u] = dict[u, k]
+        for node in nodes:
+            if node != iMin and node != jMin:
+                dict[x, node] = 0.5 * (dict[iMin, node] \
+                    + dict[jMin, node]-dict[iMin, jMin])
 
-        dict[u, u] = 0
+                dict[node, x] = dict[x, node]
+
+        # set first slot to 0
+        dict[x, x] = 0
 
         for i, j in dict.copy():
             # delete unnecessary values
             if i == iMin or i == jMin or j == iMin or j == jMin:
                 del dict[i, j]
 
-        # add new node to list, delete joined node
-        node.append(u)
-        node.remove(iMin)
-        node.remove(jMin)
+        # add new node to list
+        nodes.append(x)
+
+        # Delete min nodes
+        nodes = [node for node in nodes if node not in {iMin, jMin}]
 
         # move to next node and matrix location
-        u -= 1
+        x -= 1
         n -= 1
 
-    for k in range(len(result)):
-        if result[k][0] == NUM_SEQS + 1:
-            result[k] = (NUM_SEQS, result[k][1], result[k][2])
-        if result[k][0] == NUM_SEQS:
-            result[k] = (NUM_SEQS + 1, result[k][1], result[k][2])
+    for node in range(len(result)):
+        if result[node][0] == NUM_SEQS + 1:
+            result[node] = (NUM_SEQS, result[node][1], result[node][2])
+        if result[node][0] == NUM_SEQS:
+            result[node] = (NUM_SEQS + 1, result[node][1], result[node][2])
 
     # only two nodes: add to result
-    result.append((node[1], node[0], dict[node[0], node[1]]))
+    result.append((nodes[1], nodes[0], dict[nodes[0], nodes[1]]))
 
     # convert tuple list to dictionary
     dic = {}
