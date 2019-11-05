@@ -1,6 +1,6 @@
 # Run with:
 # Rscript hw3-plot-edges.r edges.txt tip-labels.txt
-# or 
+# or
 # Rscript hw3-plot-edges.r edges.txt tip-labels.txt bootstrap.txt
 library('ape')
 library('RColorBrewer')
@@ -15,7 +15,7 @@ make.newick <- function(edge,edge.length,tip.label,root.ix=NULL){
 	# and that those indices correspond to tip.label string vector
 	# If root is NULL, then this is the initial call to the function.
 	# Find the root node as the internal node that is never a child
-	# Otherwise, this is a recursive call; print postorder traversal 
+	# Otherwise, this is a recursive call; print postorder traversal
 	# of subtree starting with root.ix.
 
 	terminal.semicolon <- FALSE
@@ -33,7 +33,7 @@ make.newick <- function(edge,edge.length,tip.label,root.ix=NULL){
 		ret.val <- '('
 		for(row.ix in which(edge[,1] == root.ix)){
 			subtree.val <- make.newick(edge, edge.length, tip.label, root.ix=edge[row.ix,2])
-			delimiter <- ',' 
+			delimiter <- ','
 			if(ret.val == '(') delimiter <- '' # only add delimiter if not first child
 			ret.val <- paste(ret.val,delimiter,subtree.val,sep='')
 		}
@@ -50,7 +50,7 @@ make.newick <- function(edge,edge.length,tip.label,root.ix=NULL){
 
 make.phylo.from.treelike.list <- function(t){
 	# used to convert tree-like list to actual phylo object
-	# uses intermediate Newick format because I couldn't 
+	# uses intermediate Newick format because I couldn't
 	# manage to cast a list directly as a phylo object
 	t <- read.tree(text=make.newick(t$edge,t$edge.length,t$tip.label))
 	return(t)
@@ -70,6 +70,7 @@ print(tip.labels)
 
 cols <- as.character(tip.labels[,2])
 tip.labels <- rownames(tip.labels)
+names(cols) <- tip.labels
 cat('\nTip colors are:\n')
 print(cols)
 cat('\nTip labels are:\n')
@@ -105,6 +106,5 @@ plot.phylo(newtree,show.tip.label=FALSE,type='fan')
 if(!is.null(boots)){
     nodelabels(col='black',frame='none',pie=boots,width=10,height=10,cex=.3)
 }
-tiplabels(tip.labels,col=cols, frame='none', cex=.5)
+tiplabels(newtree$tip.label,col=cols[newtree$tip.label], frame='none', cex=.5)
 dev.off()
-
