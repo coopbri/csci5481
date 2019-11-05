@@ -43,7 +43,7 @@ def read(file):
             for line in f:
                 if line.startswith(">"):
                     # Sequence identifier
-                    ids.append(line.replace(">","").rstrip())
+                    ids.append(line.replace(">", "").rstrip())
                 else:
                     # Sequence
                     seqs.append(line.rstrip())
