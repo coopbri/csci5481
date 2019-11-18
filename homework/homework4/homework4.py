@@ -7,6 +7,9 @@
 
 # Imports
 #   argparse: handle command-line arguments
+#   matplotlib: visual data plotting
+#   numpy: useful methods for working with numbers
+#   scipy: smoothing method
 import argparse
 import matplotlib.pyplot as plt
 import numpy as np
@@ -124,6 +127,47 @@ def plot(perc):
     plt.show()
 
 # ============================================================================ #
+# Find variable regions                                                        #
+# ============================================================================ #
+def regions(perc):
+    # Clustering helper function
+    def cluster(data, diff):
+        groups = [[data[0]]]
+        for x in data[1:]:
+            if abs(x - groups[-1][-1]) <= diff:
+                groups[-1].append(x)
+            else:
+                groups.append([x])
+        return groups
+
+    numbers = []
+    regions = []
+
+    # Store variabilities less than 0.75
+    for i in range(len(perc)):
+        if(perc[i] < 0.75):
+            numbers.append(i)
+
+    # Group numbers by clustering helper function
+    groups = cluster(numbers, 9)
+    count = 0
+
+    # Select cluster regions whose lengths > 25 base pairs
+    for i in groups:
+        if len(i) > 25:
+            regions.append((i[0], i[-1]))
+
+    # Write variability regions to file
+    with open("regions.txt", "w") as f:
+        for fst, sec in regions:
+            f.write(str(fst) + "\t" + str(sec) + "\n")
+
+    # Close file
+    f.close()
+
+    return regions
+
+# ============================================================================ #
 # Main function                                                                #
 # ============================================================================ #
 if __name__ == "__main__":
@@ -139,3 +183,6 @@ if __name__ == "__main__":
 
     # Plot variability
     plot(percentages)
+
+    # Find variable regions
+    regions(percentages)
