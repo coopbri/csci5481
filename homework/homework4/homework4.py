@@ -1,6 +1,9 @@
 # CSCI 5481 Homework 4
 # University of Minnesota
 # Code by Brian Cooper
+# I used SciPy documentation to determine a useful smoothing technique for the
+#   variability plot. Reference: https://docs.scipy.org/doc/scipy/reference/ ...
+#       ... generated/scipy.interpolate.UnivariateSpline.html
 
 # Imports
 #   argparse: handle command-line arguments
@@ -50,65 +53,75 @@ def read(file):
 #   Variability is average identity or fraction of the most common base        #
 # ============================================================================ #
 def variability(ids, seqs):
-    # a dictionary to record the bases at each position
-	dic = {}
-	for i in range(len(seqs[0])):
-		# at first, each position has no A,T,G,or C
-		dic[i] = (0,0,0,0)
-	for seq in seqs:
-		for i in range(len(seq)):
-			# update the numbers of A,T,G,C at each positions, if it is a gap, ignore it
-			if seq[i] == "A":
-				n1 = dic[i][0]+1
-				n2 = dic[i][1]
-				n3 = dic[i][2]
-				n4 = dic[i][3]
-				dic[i] = (n1,n2,n3,n4)
+    # Bases at each position
+    pos = {}
+
+    # Fill postion dictionary with empty bases
+    for i in range(len(seqs[0])):
+        pos[i] = (0, 0, 0, 0)
+
+    # Scan through all sequences
+    for seq in seqs:
+        for i in range(len(seq)):
+            # check bases from sequences
+            if seq[i] == "A":
+                pos[i] = (pos[i][0] + 1, pos[i][1], pos[i][2], pos[i][3])
+            elif seq[i] == "T":
+                pos[i] = (pos[i][0], pos[i][1] + 1, pos[i][2], pos[i][3])
+            elif seq[i] == "G":
+                pos[i] = (pos[i][0], pos[i][1], pos[i][2] + 1, pos[i][3])
             elif seq[i] == "C":
-                b1 = dic[i][0]
-                b2 = dic[i][1]
-                b3 = dic[i][2]
-                b4 = dic[i][3]+1
-                dic[i] = (b1,b2,b3,b4)
-			elif seq[i] == "T":
-				m1 = dic[i][0]
-				m2 = dic[i][1]+1
-				m3 = dic[i][2]
-				m4 = dic[i][3]
-				dic[i] = (m1,m2,m3,m4)
-			elif seq[i] == "G":
-				a1 = dic[i][0]
-				a2 = dic[i][1]
-				a3 = dic[i][2]+1
-				a4 = dic[i][3]
-				dic[i] = (a1,a2,a3,a4)
-			# else:
-				# continue
+                pos[i] = (pos[i][0], pos[i][1], pos[i][2], pos[i][3] + 1)
 
-	# write the variability to a new file
-	for v1,v2,v3,v4 in dic.values():
-		maxVal = max(v1,v2,v3,v4)
-		percentage = maxVal * 1.0 / len(ids)
-		percentages.append(percentage)
+    # Determine variabilities based on max value
+    for v1,v2,v3,v4 in pos.values():
+        maxVal = max(v1,v2,v3,v4)
+        percentage = maxVal * 1.0 / len(ids)
+        percentages.append(percentage)
 
-	# write the variability to a text file
-	with open("variability.txt","w") as f:
-		for j in range(len(percentages)):
-			if j < len(percentages) - 1:
-				f.write(str(percentages[j]) + "\n")
-			else:
-				f.write(str(percentages[j]))
+    # Write variabilities to file
+    with open("variability.txt", "w") as f:
+        for perc in range(len(percentages)):
+            if perc < len(percentages) - 1:
+                f.write(str(percentages[perc]) + "\n")
+            else:
+                f.write(str(percentages[perc]))
 
-	f.close()
+    # Close file
+    f.close()
 
+# ============================================================================ #
+# Plot variability                                                             #
+# ============================================================================ #
 def plot(perc):
-	x = np.linspace(1, NUM_POSITIONS, NUM_POSITIONS)
-	y = perc
-	spl = UnivariateSpline(x, y)
-	xs = np.linspace(1, NUM_POSITIONS, NUM_POSITIONS)
-	spl.set_smoothing_factor(80)
-	plt.plot(xs,spl(xs))
-	plt.show()
+    # Set x and y data
+    x = np.linspace(1, NUM_POSITIONS, NUM_POSITIONS)
+    y = perc
+
+    # One-dimensional smoothing spline
+    spline = UnivariateSpline(x, y)
+
+    # Smooth data
+    spline.set_smoothing_factor(10)
+
+    # Scale figure output dimensions
+    plt.figure(figsize=(20,8))
+
+    # Add title
+    plt.title("Variability", fontsize=24)
+
+    # Add axis labels
+    plt.xlabel("Position Index", fontsize=14)
+    plt.ylabel("% Sequence Identity", fontsize=14)
+
+    # Plot data
+    plt.plot(x, spline(x))
+
+    # Save figure to file
+    plt.savefig("variability.png")
+
+    # Render plot to user's window manager
+    plt.show()
 
 # ============================================================================ #
 # Main function                                                                #
