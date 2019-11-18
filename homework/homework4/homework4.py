@@ -5,14 +5,16 @@
 #   variability plot. Reference: https://docs.scipy.org/doc/scipy/reference/ ...
 #       ... generated/scipy.interpolate.UnivariateSpline.html
 
-# Imports
+# Imports (and uses in this file)
 #   argparse: handle command-line arguments
 #   matplotlib: visual data plotting
-#   numpy: useful methods for working with numbers
+#   numpy: useful methods for working with numbers/data
+#   random: random sampling for Question 4
 #   scipy: smoothing method
 import argparse
 import matplotlib.pyplot as plt
 import numpy as np
+import random
 from scipy.interpolate import UnivariateSpline
 
 NUM_POSITIONS = 1474
@@ -168,6 +170,51 @@ def regions(perc):
     return regions
 
 # ============================================================================ #
+# Randomly select 100 sequences for analysis                                   #
+# ============================================================================ #
+def subset(ids, seqs, perc):
+    whole = {}
+    r1 = {}
+    r4 = {}
+
+    # Randomly select 100 sequences
+    subset = random.sample(seqs, 100)
+
+    for item in subset:
+        index = seqs.index(item)
+        whole[ids[index]] = item
+
+        reg = regions(perc)
+
+    v1 = reg[0]
+    v4 = reg[3]
+
+    for key, val in whole.items():
+        r1[key] = whole[key][v1[0]:v1[-1] + 1]
+        r4[key] = whole[key][v4[0]:v4[-1] + 1]
+
+    with open("whole.fna", "w") as f1:
+        for key1, val1 in whole.items():
+            f1.write(">" + str(key1) + "\n" + val1 + "\n")
+
+    # Close whole 16S file
+    f1.close()
+
+    with open("r1.fna", "w") as f2:
+        for key2, val2 in r1.items():
+            f2.write(">" + str(key2) + "\n" + val2 + "\n")
+
+    # Close variability region 1 file
+    f2.close()
+
+    with open("r4.fna", "w") as f3:
+        for key3, val3 in r4.items():
+            f3.write(">" + str(key3) + "\n" + val3 + "\n")
+
+    # Close variability region 4 file
+    f3.close()
+
+# ============================================================================ #
 # Main function                                                                #
 # ============================================================================ #
 if __name__ == "__main__":
@@ -186,3 +233,6 @@ if __name__ == "__main__":
 
     # Find variable regions
     regions(percentages)
+
+    # Randomly select 100 sequences for analysis
+    subset(ids, seqs, percentages)
