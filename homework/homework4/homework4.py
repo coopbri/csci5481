@@ -105,7 +105,7 @@ def plot(perc):
     spline.set_smoothing_factor(10)
 
     # Scale figure output dimensions
-    plt.figure(figsize=(20,8))
+    plt.figure(figsize=(30,8))
 
     # Add title
     plt.title("Variability", fontsize=24)
@@ -115,7 +115,7 @@ def plot(perc):
     plt.ylabel("% Sequence Identity", fontsize=14)
 
     # Plot data
-    plt.plot(x, spline(x))
+    plt.plot(x, spline(x), color="green")
 
     # Save figure to file
     plt.savefig("variability.png")
