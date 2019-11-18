@@ -79,9 +79,9 @@ def variability(ids, seqs):
                 pos[i] = (pos[i][0], pos[i][1], pos[i][2], pos[i][3] + 1)
 
     # Determine variabilities based on max value
-    for v1, v2, v3, v4 in pos.values():
-        maxVal = max(v1,v2,v3,v4)
-        percentage = maxVal * 1.0 / len(ids)
+    for a, t, g, c in pos.values():
+        maxVal = max(a, t, g, c)
+        percentage = maxVal * 1 / len(ids)
         percentages.append(percentage)
 
     # Write variabilities to file
@@ -147,6 +147,7 @@ def regions(perc):
                 groups.append([x])
         return groups
 
+    # Initialize empty lists for regions
     numbers = []
     regions = []
 
@@ -157,7 +158,6 @@ def regions(perc):
 
     # Group numbers by clustering helper function
     groups = cluster(numbers, 9)
-    count = 0
 
     # Select cluster regions whose lengths > 25 base pairs
     for i in groups:
@@ -204,6 +204,7 @@ def plot_regions(regions):
 # Randomly select 100 sequences for analysis                                   #
 # ============================================================================ #
 def subset(ids, seqs, perc):
+    # Initialize dictionaries for whole 16S, region 1, and region 4
     whole = {}
     r1 = {}
     r4 = {}
@@ -211,19 +212,23 @@ def subset(ids, seqs, perc):
     # Randomly select 100 sequences
     subset = random.sample(seqs, 100)
 
+    # Append sequences to dictionary
     for item in subset:
         index = seqs.index(item)
         whole[ids[index]] = item
 
-        reg = regions(perc)
+    # Find variable regions among random subset
+    reg = regions(perc)
 
     v1 = reg[0]
     v4 = reg[3]
 
+    # Write regions based on whole 16S
     for key, val in whole.items():
         r1[key] = whole[key][v1[0]:v1[-1] + 1]
         r4[key] = whole[key][v4[0]:v4[-1] + 1]
 
+    # Write variability region 1 sequences
     with open("r1.fna", "w") as fr1:
         for key2, val2 in r1.items():
             fr1.write(">" + str(key2) + "\n" + val2 + "\n")
@@ -231,6 +236,7 @@ def subset(ids, seqs, perc):
     # Close variability region 1 file
     fr1.close()
 
+    # Write variability region 4 sequences
     with open("r4.fna", "w") as fr4:
         for key3, val3 in r4.items():
             fr4.write(">" + str(key3) + "\n" + val3 + "\n")
@@ -256,9 +262,10 @@ if __name__ == "__main__":
     plot(percentages)
 
     # Find variable regions
-    regions = regions(percentages)
+    reg = regions(percentages)
 
-    plot_regions(regions)
+    # Plot variable regions
+    plot_regions(reg)
 
     # Randomly select 100 sequences for analysis
     subset(ids, seqs, percentages)
