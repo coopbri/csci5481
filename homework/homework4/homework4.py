@@ -79,7 +79,7 @@ def variability(ids, seqs):
                 pos[i] = (pos[i][0], pos[i][1], pos[i][2], pos[i][3] + 1)
 
     # Determine variabilities based on max value
-    for v1,v2,v3,v4 in pos.values():
+    for v1, v2, v3, v4 in pos.values():
         maxVal = max(v1,v2,v3,v4)
         percentage = maxVal * 1.0 / len(ids)
         percentages.append(percentage)
@@ -99,15 +99,20 @@ def variability(ids, seqs):
 # Plot variability                                                             #
 # ============================================================================ #
 def plot(perc):
-    # Set x and y data
-    x = np.linspace(1, NUM_POSITIONS, NUM_POSITIONS)
-    y = perc
+    # Set x data (positions)
+    x = np.linspace(0, NUM_POSITIONS, NUM_POSITIONS)
+
+    def convert(n):
+        return n * 100
+
+    # Set y data (values mapped to percentages)
+    y = list(map(convert, perc))
 
     # One-dimensional smoothing spline
     spline = UnivariateSpline(x, y)
 
     # Smooth data
-    spline.set_smoothing_factor(10)
+    spline.set_smoothing_factor(20)
 
     # Scale figure output dimensions
     plt.figure(figsize=(30,8))
@@ -170,6 +175,24 @@ def regions(perc):
     return regions
 
 # ============================================================================ #
+# Plot variability regions                                                     #
+# ============================================================================ #
+def plot_regions(regions):
+    plt.plot(NUM_POSITIONS)
+    plt.yticks(np.linspace(0, 0.01, 1, endpoint=True))
+
+    for start, end in regions:
+        plt.axvspan(start, end, color="green")
+
+    # Add title
+    plt.title("Variability Regions", fontsize=24)
+
+    # Save figure to file
+    plt.savefig("regions.png")
+
+    plt.show()
+
+# ============================================================================ #
 # Randomly select 100 sequences for analysis                                   #
 # ============================================================================ #
 def subset(ids, seqs, perc):
@@ -193,26 +216,26 @@ def subset(ids, seqs, perc):
         r1[key] = whole[key][v1[0]:v1[-1] + 1]
         r4[key] = whole[key][v4[0]:v4[-1] + 1]
 
-    with open("whole.fna", "w") as f1:
-        for key1, val1 in whole.items():
-            f1.write(">" + str(key1) + "\n" + val1 + "\n")
+    # with open("whole.fna", "w") as f1:
+    #     for key1, val1 in whole.items():
+    #         f1.write(">" + str(key1) + "\n" + val1 + "\n")
+    #
+    # # Close whole 16S file
+    # f1.close()
 
-    # Close whole 16S file
-    f1.close()
-
-    with open("r1.fna", "w") as f2:
+    with open("r1.fna", "w") as fr1:
         for key2, val2 in r1.items():
-            f2.write(">" + str(key2) + "\n" + val2 + "\n")
+            fr1.write(">" + str(key2) + "\n" + val2 + "\n")
 
     # Close variability region 1 file
-    f2.close()
+    fr1.close()
 
-    with open("r4.fna", "w") as f3:
+    with open("r4.fna", "w") as fr4:
         for key3, val3 in r4.items():
-            f3.write(">" + str(key3) + "\n" + val3 + "\n")
+            fr4.write(">" + str(key3) + "\n" + val3 + "\n")
 
     # Close variability region 4 file
-    f3.close()
+    fr4.close()
 
 # ============================================================================ #
 # Main function                                                                #
@@ -232,7 +255,9 @@ if __name__ == "__main__":
     plot(percentages)
 
     # Find variable regions
-    regions(percentages)
+    regions = regions(percentages)
+
+    plot_regions(regions)
 
     # Randomly select 100 sequences for analysis
-    subset(ids, seqs, percentages)
+    # subset(ids, seqs, percentages)
