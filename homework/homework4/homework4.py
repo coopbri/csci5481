@@ -118,6 +118,7 @@ def plot(perc):
     # One-dimensional smoothing spline
     # A univariate smoothing technique was chosen because the only varying data
     #   is the y-axis data, and this technique is designed for one variable
+    # I used SciPy documentation to find this method (credits at top of file)
     spline = UnivariateSpline(x, y)
 
     # Smooth data
@@ -147,9 +148,8 @@ def plot(perc):
 # ============================================================================ #
 def regions(perc):
     # Clustering helper function
-    # This code is not mine; it is from Raymond Hettinger on Stack Overflow:
-    #   https://stackoverflow.com/questions/14783947/grouping-clustering- ...
-    #       ... numbers-in-python
+    # This code is not mine; it is from Raymond Hettinger on Stack Overflow
+    #   (credits at top of file)
     def cluster(data, maxgap):
         data.sort()
         groups = [[data[0]]]
