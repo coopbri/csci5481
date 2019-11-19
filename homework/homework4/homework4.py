@@ -1,6 +1,6 @@
 # CSCI 5481 Homework 4
 # University of Minnesota
-# Most code by me (Brian Cooper), except:
+# Most code by Brian Cooper, except:
 # Credit 1.
 # I used SciPy documentation to determine a useful smoothing technique for the
 #   variability plot. Reference: https://docs.scipy.org/doc/scipy/reference/ ...
@@ -85,17 +85,19 @@ def variability(ids, seqs):
 
     # Determine variabilities based on max value
     for a, t, g, c in pos.values():
+        # Find most frequent base
         maxVal = max(a, t, g, c)
-        percentage = maxVal * 1 / len(ids)
-        percentages.append(percentage)
+
+        # Append percentage of most frequent base
+        percentages.append(maxVal / len(ids))
 
     # Write variabilities to file
     with open("variability.txt", "w") as f:
-        for perc in range(len(percentages)):
-            if perc < len(percentages) - 1:
-                f.write(str(percentages[perc]) + "\n")
+        for p in range(len(percentages)):
+            if p < len(percentages) - 1:
+                f.write(str(percentages[p]) + "\n")
             else:
-                f.write(str(percentages[perc]))
+                f.write(str(percentages[p]))
 
     # Close file
     f.close()
@@ -107,10 +109,10 @@ def plot(perc):
     # Set x data (positions)
     x = np.linspace(0, NUM_POSITIONS, NUM_POSITIONS)
 
-    def convert(n):
-        return n * 100
+    # Anonymous function to convert y values to true percentages
+    convert = lambda n : n * 100
 
-    # Set y data (values mapped to percentages)
+    # Set y data (values mapped to percentages; above lambda applied)
     y = list(map(convert, perc))
 
     # One-dimensional smoothing spline
@@ -160,24 +162,25 @@ def regions(perc):
     numbers = []
     regions = []
 
-    # Extract and store variabilities less than 75%
-    # 75% is a good threshold for determining
+    # Extract and store variabilities less than 70%
+    # 70% is a good threshold for cutting out highly variable data; found by
+    #   testing of various thresholds between 50% and 90%
     for p in range(len(perc)):
-        if(perc[p] < 0.75):
+        if(perc[p] < 0.70):
             numbers.append(p)
 
-    # Group numbers by clustering helper function
-    groups = cluster(numbers, 9)
+    # Group numbers using clustering helper function above
+    clusters = cluster(numbers, 9)
 
-    # Select cluster regions whose lengths > 25 base pairs
-    for i in groups:
-        if len(i) > 25:
-            regions.append((i[0], i[-1]))
+    # Select and store cluster regions whose length > 25 base pairs
+    for c in clusters:
+        if len(c) > 25:
+            regions.append((c[0], c[-1]))
 
     # Write variability regions to file
     with open("regions.txt", "w") as f:
-        for fst, sec in regions:
-            f.write(str(fst) + "\t" + str(sec) + "\n")
+        for start, end in regions:
+            f.write(str(start) + "\t" + str(end) + "\n")
 
     # Close file
     f.close()
@@ -230,6 +233,7 @@ def subset(ids, seqs, perc):
     # Find variable regions among random subset
     reg = regions(perc)
 
+    # set variable regions 1 and 4 for analysis
     v1 = reg[0]
     v4 = reg[3]
 
@@ -237,6 +241,14 @@ def subset(ids, seqs, perc):
     for key, val in whole.items():
         r1[key] = whole[key][v1[0]:v1[-1] + 1]
         r4[key] = whole[key][v4[0]:v4[-1] + 1]
+
+    # Write whole 16S variability
+    with open("whole.fna", "w") as fw:
+        for key1, val1 in whole.items():
+            fw.write(">" + str(key1) + "\n" + val1 + "\n")
+
+    # Close whole 16S file
+    fw.close()
 
     # Write variability region 1 sequences
     with open("r1.fna", "w") as fr1:
@@ -278,4 +290,4 @@ if __name__ == "__main__":
     plot_regions(reg)
 
     # Randomly select 100 sequences for analysis
-    subset(ids, seqs, percentages)
+    # subset(ids, seqs, percentages)
