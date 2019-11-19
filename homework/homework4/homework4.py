@@ -156,30 +156,15 @@ def regions(perc):
                 groups.append([x])
         return groups
 
-    # def pairify(it):
-    #     it0, it1 = itertools.tee(it, 2)
-    #     first = next(it0)
-    #     return zip(itertools.chain([first, first], it0), it1)
-    #
-    # def cluster(data, maxgap):
-    #     batch = []
-    #     for prev, val in pairify(data):
-    #         if val - prev >= maxgap:
-    #             yield batch
-    #             batch = []
-    #         else:
-    #             batch.append(val)
-    #     if batch:
-    #         yield batch
-
     # Initialize empty lists for regions
     numbers = []
     regions = []
 
-    # Store variabilities less than 0.75
-    for i in range(len(perc)):
-        if(perc[i] < 0.75):
-            numbers.append(i)
+    # Extract and store variabilities less than 75%
+    # 75% is a good threshold for determining
+    for p in range(len(perc)):
+        if(perc[p] < 0.75):
+            numbers.append(p)
 
     # Group numbers by clustering helper function
     groups = cluster(numbers, 9)
@@ -253,13 +238,6 @@ def subset(ids, seqs, perc):
         r1[key] = whole[key][v1[0]:v1[-1] + 1]
         r4[key] = whole[key][v4[0]:v4[-1] + 1]
 
-    with open("whole.fna", "w") as fw:
-        for key1, val1 in whole.items():
-            fw.write(">" + str(key1) + "\n" + val1 + "\n")
-
-    # Close whole 16S file
-    fw.close()
-
     # Write variability region 1 sequences
     with open("r1.fna", "w") as fr1:
         for key2, val2 in r1.items():
@@ -300,4 +278,4 @@ if __name__ == "__main__":
     plot_regions(reg)
 
     # Randomly select 100 sequences for analysis
-    # subset(ids, seqs, percentages)
+    subset(ids, seqs, percentages)
