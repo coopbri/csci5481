@@ -290,4 +290,4 @@ if __name__ == "__main__":
     plot_regions(reg)
 
     # Randomly select 100 sequences for analysis
-    # subset(ids, seqs, percentages)
+    subset(ids, seqs, percentages)
