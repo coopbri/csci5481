@@ -1,9 +1,14 @@
 # CSCI 5481 Homework 4
 # University of Minnesota
-# Code by Brian Cooper
+# Most code by me (Brian Cooper), except:
+# Credit 1.
 # I used SciPy documentation to determine a useful smoothing technique for the
 #   variability plot. Reference: https://docs.scipy.org/doc/scipy/reference/ ...
 #       ... generated/scipy.interpolate.UnivariateSpline.html
+# Credit 2.
+# I also used a Stack Overflow answer to determine a number clustering method.
+#   The method is by Raymond Hettinger: https://stackoverflow.com/questions/ ...
+#       ... 14783947/grouping-clustering-numbers-in-python
 
 # Imports (and uses in this file)
 #   argparse: handle command-line arguments
@@ -138,14 +143,34 @@ def plot(perc):
 # ============================================================================ #
 def regions(perc):
     # Clustering helper function
-    def cluster(data, diff):
+    # This code is not mine; it is from Raymond Hettinger on Stack Overflow:
+    #   https://stackoverflow.com/questions/14783947/grouping-clustering- ...
+    #       ... numbers-in-python
+    def cluster(data, maxgap):
+        data.sort()
         groups = [[data[0]]]
         for x in data[1:]:
-            if abs(x - groups[-1][-1]) <= diff:
+            if abs(x - groups[-1][-1]) <= maxgap:
                 groups[-1].append(x)
             else:
                 groups.append([x])
         return groups
+
+    # def pairify(it):
+    #     it0, it1 = itertools.tee(it, 2)
+    #     first = next(it0)
+    #     return zip(itertools.chain([first, first], it0), it1)
+    #
+    # def cluster(data, maxgap):
+    #     batch = []
+    #     for prev, val in pairify(data):
+    #         if val - prev >= maxgap:
+    #             yield batch
+    #             batch = []
+    #         else:
+    #             batch.append(val)
+    #     if batch:
+    #         yield batch
 
     # Initialize empty lists for regions
     numbers = []
@@ -228,6 +253,13 @@ def subset(ids, seqs, perc):
         r1[key] = whole[key][v1[0]:v1[-1] + 1]
         r4[key] = whole[key][v4[0]:v4[-1] + 1]
 
+    with open("whole.fna", "w") as fw:
+        for key1, val1 in whole.items():
+            fw.write(">" + str(key1) + "\n" + val1 + "\n")
+
+    # Close whole 16S file
+    fw.close()
+
     # Write variability region 1 sequences
     with open("r1.fna", "w") as fr1:
         for key2, val2 in r1.items():
@@ -268,4 +300,4 @@ if __name__ == "__main__":
     plot_regions(reg)
 
     # Randomly select 100 sequences for analysis
-    subset(ids, seqs, percentages)
+    # subset(ids, seqs, percentages)
