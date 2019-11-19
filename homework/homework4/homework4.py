@@ -116,6 +116,8 @@ def plot(perc):
     y = list(map(convert, perc))
 
     # One-dimensional smoothing spline
+    # A univariate smoothing technique was chosen because the only varying data
+    #   is the y-axis data, and this technique is designed for one variable
     spline = UnivariateSpline(x, y)
 
     # Smooth data
