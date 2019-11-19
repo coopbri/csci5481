@@ -9,6 +9,10 @@
 # I also used a Stack Overflow answer to determine a number clustering method.
 #   The method is by Raymond Hettinger: https://stackoverflow.com/questions/ ...
 #       ... 14783947/grouping-clustering-numbers-in-python
+# Credit 3. and 4.
+# Outside of this code, I used an online tool to convert my FASTA files to
+#   NEXUS files and another online tool to visualize the phylogenies. These are
+#   described in `README.md`
 
 # Imports (and uses in this file)
 #   argparse: handle command-line arguments
