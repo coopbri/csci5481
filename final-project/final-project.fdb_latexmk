@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1575262507 "final-project.tex" "final-project.pdf" "final-project" 1575262507
+["pdflatex"] 1575321542 "final-project.tex" "final-project.pdf" "final-project" 1575321542
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1572595918 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1572595918 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm" 1572595918 1524 4414a8315f39513458b80dfc63bff03a ""
@@ -16,12 +16,14 @@
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1572595918 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1572595918 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1572595918 32362 179c33bbf43f19adbb3825bb4e36e57a ""
+  "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1572595918 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1572595918 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/share/texmf-dist/tex/generic/ifxetex/ifxetex.sty" 1572595918 1458 43ab4710dc82f3edeabecd0d099626b2 ""
   "/usr/share/texmf-dist/tex/generic/oberdiek/gettitlestring.sty" 1572595918 8237 3b62ef1f7e2c23a328c814b3893bc11f ""
   "/usr/share/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty" 1572595918 185392 ed78c0cbc4fc8c3af82e7bffbdeeb1a9 ""
   "/usr/share/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty" 1572595918 70864 bcd5b216757bd619ae692a151d90085d ""
   "/usr/share/texmf-dist/tex/latex/base/article.cls" 1572595918 19931 9ab70b303cca263e0120c205e98dee99 ""
+  "/usr/share/texmf-dist/tex/latex/base/omscmr.fd" 1572595918 2470 eac9b55b50df56621bd69fa9b6495a74 ""
   "/usr/share/texmf-dist/tex/latex/base/size10.clo" 1572595918 8405 41d2bb848d0640ceaee96d90b89378b7 ""
   "/usr/share/texmf-dist/tex/latex/graphics-cfg/color.cfg" 1572595918 1213 620bba36b25224fa9b7e1ccb4ecb76fd ""
   "/usr/share/texmf-dist/tex/latex/graphics-def/pdftex.def" 1572595918 17334 520b9b85ad8a2a48eda3f643e27a5179 ""
@@ -40,11 +42,11 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1572595918 33301 a3134070eacafb10b1f371612ce2650d ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1573775177 4572998 f9631eebba48c3ee98e5d310044b0a09 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1573775158 8044940 e52ab5a670dfe5f850831ab96b04f359 ""
-  "final-project.aux" 1575262507 1191 48b512aab54587ca0d637a7a71c52add "pdflatex"
-  "final-project.out" 1575262507 219 2d407630ee82fad288a9d6793b5e54e3 "pdflatex"
-  "final-project.tex" 1575262507 522 901d538529754d2ef3730b1782e3f2d5 ""
+  "final-project.aux" 1575321542 1191 d861a214921f6384388a92da0e5be408 "pdflatex"
+  "final-project.out" 1575321542 219 2d407630ee82fad288a9d6793b5e54e3 "pdflatex"
+  "final-project.tex" 1575321542 2109 2f7bc5f6eec2e111b259b78c32fe706e ""
   (generated)
-  "final-project.out"
   "final-project.aux"
-  "final-project.pdf"
   "final-project.log"
+  "final-project.out"
+  "final-project.pdf"
