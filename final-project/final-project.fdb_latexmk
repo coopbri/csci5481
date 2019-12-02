@@ -1,6 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1575262347 "final-project.tex" "final-project.pdf" "final-project" 1575262372
+["pdflatex"] 1575262507 "final-project.tex" "final-project.pdf" "final-project" 1575262507
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1572595918 3332 103109f5612ad95229751940c61aada0 ""
+  "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1572595918 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm" 1572595918 1524 4414a8315f39513458b80dfc63bff03a ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm" 1572595918 1512 f21f83efb36853c0b70002322c1ab3ad ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm" 1572595918 1520 eccf95517727cb11801f4f1aee3a21b4 ""
@@ -11,6 +12,7 @@
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm" 1572595918 1124 6c73e740cf17375f03eec0ee63599741 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmsy6.tfm" 1572595918 1116 933a60c408fc0a863a92debe84b2d294 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm" 1572595918 1120 8b7d695260f3cff42e636090a8002094 ""
+  "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1572595918 32080 340ef9bf63678554ee606688e7b5339d ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1572595918 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1572595918 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1572595918 32362 179c33bbf43f19adbb3825bb4e36e57a ""
@@ -38,11 +40,11 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1572595918 33301 a3134070eacafb10b1f371612ce2650d ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1573775177 4572998 f9631eebba48c3ee98e5d310044b0a09 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1573775158 8044940 e52ab5a670dfe5f850831ab96b04f359 ""
-  "final-project.aux" 1575262347 662 b2b94621371df8d9296b8bf5bec1b851 "pdflatex"
-  "final-project.out" 1575262347 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "final-project.tex" 1575262372 355 f1955a82489b6c7924b31c318e33e317 ""
+  "final-project.aux" 1575262507 1191 48b512aab54587ca0d637a7a71c52add "pdflatex"
+  "final-project.out" 1575262507 219 2d407630ee82fad288a9d6793b5e54e3 "pdflatex"
+  "final-project.tex" 1575262507 522 901d538529754d2ef3730b1782e3f2d5 ""
   (generated)
-  "final-project.log"
-  "final-project.aux"
   "final-project.out"
+  "final-project.aux"
   "final-project.pdf"
+  "final-project.log"
