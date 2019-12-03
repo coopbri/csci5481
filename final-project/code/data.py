@@ -54,7 +54,7 @@ def ecoli(training_size, test_size, n, PLOT_DATA):
     df = pd.read_csv('datasets/ecoli.csv', header=None)
     df = df.replace({'cp':0, 'im':1, 'pp':2, 'imU':3, 'om':4, 'omL':5, \
         'imL':6, 'imS':7})
-    data = df.iloc[:,1:8]
+    data = df.iloc[:,1:8].astype(float)
     target = df.iloc[:,8]
 
     sample_train, label_train, training_input, test_input = \
@@ -139,38 +139,83 @@ def yeast(training_size, test_size, n, PLOT_DATA):
     return sample_train, training_input, test_input, class_labels
 
 # ============================================================================ #
-# RNA-seq dataset                                                              #
+# Mouse dataset                                                                #
 # ============================================================================ #
-def rnaseq(training_size, test_size, n, PLOT_DATA):
-    class_labels = [r'PRAD', r'LUAD', r'BRCA', r'KIRC', r'COAD']
-    
-    df = pd.read_csv('datasets/rnaseq.csv', header=None)
-    df = df.replace({'PRAD':0, 'LUAD':1, 'BRCA':2, 'KIRC':3, 'COAD':4})
-    data = df.iloc[:,1:20532]
-    target = df.iloc[:,:20532]
-    
+def mouse(training_size, test_size, n, PLOT_DATA):
+    class_labels = [r'c-CS-s', r'c-CS-m', r'c-SC-s', r'c-SC-m', \
+        r't-CS-s', r't-CS-m', r't-SC-s', r't-SC-m']
+
+    df = pd.read_csv('datasets/mouse.csv', header=None)
+    df = df.replace({'c-CS-s':0, 'c-CS-m':1, 'c-SC-s':2, 'c-SC-m':3, \
+        't-CS-s':4, 't-CS-m':5, 't-SC-s':6, 't-SC-m':7})
+    data = df.iloc[:,1:10]
+    target = df.iloc[:,78]
+
     sample_train, label_train, training_input, test_input = \
         prepare_data(data, target, n, training_size, test_size, class_labels)
-    
+
     if PLOT_DATA:
-        for k in range(5):
+        for k in range(8):
             if k == 0:
-                label = 'PRAD'
+                label = 'c-CS-s'
             elif k == 1:
-                label = 'LUAD'
+                label = 'c-CS-m'
             elif k == 2:
-                label = 'BRCA'
+                label = 'c-SC-s'
             elif k == 3:
-                label = 'KIRC'
+                label = 'c-SC-m'
+            elif k == 4:
+                label = 't-CS-s'
+            elif k == 5:
+                label = 't-CS-m'
+            elif k == 6:
+                label = 't-SC-s'
             else:
-                label = 'COAD'
-                
-            plt.scatter(sample_train[label_train == k, 0][:10],
-                        sample_train[label_train == k, 1][:10],
+                label = 't-SC-m'
+
+            plt.scatter(sample_train[label_train == k, 0][:training_size],
+                        sample_train[label_train == k, 1][:training_size],
                         label=label)
 
-        plt.title("RNA-seq Dataset")
+        plt.title("Mouse Dataset")
         plt.legend()
         plt.show()
 
     return sample_train, training_input, test_input, class_labels
+
+# ============================================================================ #
+# RNA-seq dataset                                                              #
+# ============================================================================ #
+# def rnaseq(training_size, test_size, n, PLOT_DATA):
+#     class_labels = [r'PRAD', r'LUAD', r'BRCA', r'KIRC', r'COAD']
+
+#     df = pd.read_csv('datasets/rnaseq.csv', header=None)
+#     df = df.replace({'PRAD':0, 'LUAD':1, 'BRCA':2, 'KIRC':3, 'COAD':4})
+#     data = df.iloc[:,1:20532]
+#     target = df.iloc[:,:20532]
+
+#     sample_train, label_train, training_input, test_input = \
+#         prepare_data(data, target, n, training_size, test_size, class_labels)
+
+#     if PLOT_DATA:
+#         for k in range(5):
+#             if k == 0:
+#                 label = 'PRAD'
+#             elif k == 1:
+#                 label = 'LUAD'
+#             elif k == 2:
+#                 label = 'BRCA'
+#             elif k == 3:
+#                 label = 'KIRC'
+#             else:
+#                 label = 'COAD'
+
+#             plt.scatter(sample_train[label_train == k, 0][:10],
+#                         sample_train[label_train == k, 1][:10],
+#                         label=label)
+
+#         plt.title("RNA-seq Dataset")
+#         plt.legend()
+#         plt.show()
+
+#     return sample_train, training_input, test_input, class_labels
