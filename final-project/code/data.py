@@ -46,34 +46,6 @@ def prepare_data(data, target, n, training_size, test_size, class_labels):
     return sample_train, label_train, training_input, test_input
 
 # ============================================================================ #
-# Breast cancer dataset                                                        #
-# ============================================================================ #
-def breast_cancer(training_size, test_size, n, PLOT_DATA):
-    class_labels = [r'Benign', r'Malignant']
-
-    df = pd.read_csv('datasets/breast-cancer-wisconsin.csv', header=None)
-    df = df.replace({'B':0, 'M':1})
-    data = df.iloc[:,2:]
-    target = df.iloc[:,1]
-
-    sample_train, label_train, training_input, test_input = \
-        prepare_data(data, target, n, training_size, test_size, class_labels)
-
-    if PLOT_DATA:
-        for k in range(0, 2):
-            label = 'Benign' if k is 0 else 'Malignant'
-
-            plt.scatter(sample_train[label_train == k, 0][:training_size],
-                        sample_train[label_train == k, 1][:training_size],
-                        label=label)
-
-        plt.title("Breast Cancer Dataset")
-        plt.legend()
-        plt.show()
-
-    return sample_train, training_input, test_input, class_labels
-
-# ============================================================================ #
 # Ecoli dataset                                                                #
 # ============================================================================ #
 def ecoli(training_size, test_size, n, PLOT_DATA):
@@ -89,7 +61,7 @@ def ecoli(training_size, test_size, n, PLOT_DATA):
         prepare_data(data, target, n, training_size, test_size, class_labels)
 
     if PLOT_DATA:
-        for k in range(0,8):
+        for k in range(8):
             if k == 0:
                 label = 'cp'
             elif k == 1:
@@ -134,7 +106,7 @@ def yeast(training_size, test_size, n, PLOT_DATA):
         prepare_data(data, target, n, training_size, test_size, class_labels)
 
     if PLOT_DATA:
-        for k in range(0,10):
+        for k in range(10):
             if k == 0:
                 label = 'CYT'
             elif k == 1:
@@ -167,55 +139,37 @@ def yeast(training_size, test_size, n, PLOT_DATA):
     return sample_train, training_input, test_input, class_labels
 
 # ============================================================================ #
-# Parkinson's dataset                                                          #
+# RNA-seq dataset                                                              #
 # ============================================================================ #
-def parkinson(training_size, test_size, n, PLOT_DATA):
-    class_labels = [r'Healthy', r'Parkinson\'s']
-
-    df = pd.read_csv('datasets/parkinsons.csv', header=None)
-    data = df.iloc[:,1:23]
-    target = df.iloc[:,23]
-
+def rnaseq(training_size, test_size, n, PLOT_DATA):
+    class_labels = [r'PRAD', r'LUAD', r'BRCA', r'KIRC', r'COAD']
+    
+    df = pd.read_csv('datasets/rnaseq.csv', header=None)
+    df = df.replace({'PRAD':0, 'LUAD':1, 'BRCA':2, 'KIRC':3, 'COAD':4})
+    data = df.iloc[:,1:20532]
+    target = df.iloc[:,:20532]
+    
     sample_train, label_train, training_input, test_input = \
         prepare_data(data, target, n, training_size, test_size, class_labels)
-
+    
     if PLOT_DATA:
-        for k in range(0,2):
-            label = 'Healthy' if k is 0 else 'Parkinson\'s'
-
-            plt.scatter(sample_train[label_train == k, 0][:training_size],
-                        sample_train[label_train == k, 1][:training_size],
+        for k in range(5):
+            if k == 0:
+                label = 'PRAD'
+            elif k == 1:
+                label = 'LUAD'
+            elif k == 2:
+                label = 'BRCA'
+            elif k == 3:
+                label = 'KIRC'
+            else:
+                label = 'COAD'
+                
+            plt.scatter(sample_train[label_train == k, 0][:10],
+                        sample_train[label_train == k, 1][:10],
                         label=label)
 
-        plt.title("Parkinson's Disease Dataset")
-        plt.legend()
-        plt.show()
-
-    return sample_train, training_input, test_input, class_labels
-
-# ============================================================================ #
-# Heart dataset                                                                #
-# ============================================================================ #
-def heart(training_size, test_size, n, PLOT_DATA):
-    class_labels = [r'Absent', r'Present']
-
-    df = pd.read_csv('datasets/heart.csv', header=None)
-    df = df.replace({1:0, 2:1})
-    data = df.iloc[:,0:13].astype(float)
-    target = df.iloc[:,13].astype(float)
-
-    sample_train, label_train, training_input, test_input = \
-        prepare_data(data, target, n, training_size, test_size, class_labels)
-
-    if PLOT_DATA:
-        for k in range(0,2):
-            label = 'Absent' if k is 0 else 'Present'
-
-            plt.scatter(sample_train[label_train == k, 0][:training_size],
-                        sample_train[label_train == k, 1][:training_size],
-                        label=label)
-
-        plt.title("Heart Disease Dataset")
+        plt.title("RNA-seq Dataset")
         plt.legend()
         plt.show()
 
