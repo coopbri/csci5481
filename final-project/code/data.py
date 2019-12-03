@@ -149,7 +149,7 @@ def mouse(training_size, test_size, n, PLOT_DATA):
     df = df.replace({'c-CS-s':0, 'c-CS-m':1, 'c-SC-s':2, 'c-SC-m':3, \
         't-CS-s':4, 't-CS-m':5, 't-SC-s':6, 't-SC-m':7})
     data = df.iloc[:,1:10]
-    target = df.iloc[:,78]
+    target = df.iloc[:,10]
 
     sample_train, label_train, training_input, test_input = \
         prepare_data(data, target, n, training_size, test_size, class_labels)
