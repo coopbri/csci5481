@@ -1,4 +1,4 @@
-PWD /home/brian/Dev/csci5481/final-project
+PWD /home/brian/dev/csci5481/final-project
 INPUT /usr/share/texmf-dist/web2c/texmf.cnf
 INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
 INPUT final-project.tex

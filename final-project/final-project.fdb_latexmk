@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1575341006 "final-project.tex" "final-project.pdf" "final-project" 1575341006
+["pdflatex"] 1575384923 "final-project.tex" "final-project.pdf" "final-project" 1575384924
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1572595918 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1572595918 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm" 1572595918 1524 4414a8315f39513458b80dfc63bff03a ""
@@ -40,13 +40,13 @@
   "/usr/share/texmf-dist/tex/latex/tools/indentfirst.sty" 1572595918 1619 81f309217cfe2e8a93458f2cc7188755 ""
   "/usr/share/texmf-dist/tex/latex/url/url.sty" 1572595918 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1572595918 33301 a3134070eacafb10b1f371612ce2650d ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1573775177 4572998 f9631eebba48c3ee98e5d310044b0a09 ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1573775158 8044940 e52ab5a670dfe5f850831ab96b04f359 ""
-  "final-project.aux" 1575341006 1310 e043955c3d2671fade944666a927f3de "pdflatex"
-  "final-project.out" 1575341006 276 464d917f49cb702c3362f14ba5e80ce9 "pdflatex"
-  "final-project.tex" 1575341005 2548 cb8aed51fdf1c31a3a21b7668d098cf0 ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1573745380 4572998 f9631eebba48c3ee98e5d310044b0a09 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1573745349 8044940 19b42ac7bfb2decec02433d5cb51515f ""
+  "final-project.aux" 1575384923 1310 e043955c3d2671fade944666a927f3de "pdflatex"
+  "final-project.out" 1575384923 276 464d917f49cb702c3362f14ba5e80ce9 "pdflatex"
+  "final-project.tex" 1575384923 2630 390c4c9b682493556ed8b124a9e6396f ""
   (generated)
-  "final-project.pdf"
-  "final-project.log"
   "final-project.aux"
+  "final-project.pdf"
   "final-project.out"
+  "final-project.log"
