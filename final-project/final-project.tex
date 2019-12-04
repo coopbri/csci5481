@@ -44,10 +44,28 @@
       \item Mice Protein Expression~\cite{mouse}
     \end{itemize}
 
-  A support vector machine with a radial-basis kernel was chosen.
+  The full E. Coli (336 instances, 7 features) and Yeast (1484 instances, 8 features) datasets were used, but a subset of the mouse dataset was used (553 instances -- after removing instances with missing attributes -- and the first 9 features). This is because the original size of the mouse dataset, with 1080 instances and 82 features, would be intractable for a classical quantum simulation without distributing the task with GPU acceleration or a real quantum computer. \\
+
+  A support vector machine with a radial-basis kernel was chosen. Each of the datasets, having features and class labels for training and testing, are capable of building classification models. \\
+
+  The experiments were performed on an Intel processor at 4.60GHz running Linux.
 
 \section{Results}
-  Despite using the same kernel (based on a radial-basis function), the classical support vector machine had different results than that quantum support vector machine.
+    See Table \ref{table:accuracy}.
+
+    \begin{table}[h]
+      \centering
+      \begin{tabular}{c|c|c|}
+      \cline{2-3}
+                                    & Classical SVM & Quantum SVM \\ \hline
+      \multicolumn{1}{|c|}{E. Coli} & 90\%          & 70\%        \\ \hline
+      \multicolumn{1}{|c|}{Yeast}   & 45\%          & 49\%        \\ \hline
+      \multicolumn{1}{|c|}{Mouse}   & 43\%          & 22\%        \\ \hline
+      \end{tabular}
+      \caption{\label{table:accuracy}Model accuracy results.}
+    \end{table}
+
+    The relatively lower accuracy on the mouse dataset may be improved by using more data from the mouse dataset (up to the entire set), which would be more practical with real quantum hardware. Although the removal of data results in lower accuracy, the primary focus of this research is to compare the performance of the two support vector machine approaches, rather than focus on optimizing the model performance itself.
 
 \section{Conclusion}
   Abc
