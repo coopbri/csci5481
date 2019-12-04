@@ -74,9 +74,9 @@ INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
 INPUT /usr/share/texmf-dist/tex/latex/base/omscmr.fd
 INPUT /usr/share/texmf-dist/tex/latex/base/omscmr.fd
 INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
-INPUT final-project.bbl
-INPUT final-project.bbl
 INPUT /usr/share/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
+INPUT final-project.bbl
+INPUT final-project.bbl
 INPUT final-project.aux
 INPUT ./final-project.out
 INPUT ./final-project.out
