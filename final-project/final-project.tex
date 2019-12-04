@@ -29,19 +29,25 @@
 \section{Methods}
   Qiskit provides two distinct methods for performing quantum computing experiments:
 
-  Multivariate data was chosen from the UCI Machine Learning Repository~\cite{}.
+    \begin{itemize}
+      \item{Running tasks on real quantum computing hardware (connected with an API to IBM Q computers)}
+      \item{A built-in quantum hardware simulator for performing experiments on a classical computer}
+    \end{itemize}
 
-  \begin{itemize}
-    \item{Real quantum computing}
-    \item{A built-in simulator for real hardware}
-  \end{itemize}
+  The simulator was chosen, as I do not have any academic credit required to perform experiments on real quantum computing hardware. This necessarily rules out any accurate analysis of the time and space complexities, since quantum computing mathematics is calculated within a classical computer environment. Quantum computing algorithms are, of course, designed to be run on quantum hardware, so the computational time and space cannot be accurately gauged in this manner. Qiskit does provide GPU acceleration support through its QCGPU communication package.~\cite{qcgpu} \\
 
-  I opted for the second option, as I do not have any academic credit required to perform experiments on real quantum computing hardware. \\
+  Multivariate data was selected from the UCI Machine Learning Repository~\cite{mlrepo}. Instances from three datasets were used:
 
-  A support vector machine with a radial-basis kernel was chosen
+    \begin{itemize}
+      \item E. Coli~\cite{ecoli}
+      \item Yeast~\cite{yeast}
+      \item Mice Protein Expression~\cite{mouse}
+    \end{itemize}
+
+  A support vector machine with a radial-basis kernel was chosen.
 
 \section{Results}
-  Abc
+  Despite using the same kernel (based on a radial-basis function), the classical support vector machine had different results than that quantum support vector machine.
 
 \section{Conclusion}
   Abc
@@ -49,10 +55,9 @@
 \section{Supplementary Material}
 All of the source code is publicly available at [URL].
 
+\end{document}
+
 https://archive.ics.uci.edu/ml/datasets/Yeast
 https://archive.ics.uci.edu/ml/datasets/Ecoli
-https://archive.ics.uci.edu/ml/datasets/gene+expression+cancer+RNA-Seq
 https://archive.ics.uci.edu/ml/datasets/Mice+Protein+Expression
-https://archive.ics.uci.edu/ml/datasets/PubChem+Bioassay+Data
-
-\end{document}
+https://github.com/qiskit-community/qiskit-qcgpu-provider
