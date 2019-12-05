@@ -47,7 +47,7 @@
 
   The full E. Coli (336 instances, 7 features) and Yeast (1484 instances, 8 features) datasets were used, but a subset of the mouse dataset was used (553 instances -- after removing instances with missing attributes -- and the first 9 features). This is because the original size of the mouse dataset, with 1080 instances and 82 features, would be intractable for a classical quantum simulation without distributing the task with GPU acceleration or a real quantum computer. \\
 
-  A support vector machine with a radial-basis kernel was chosen. Each of the datasets was split into 70\% testing data, 30\% training data.
+  A support vector machine with a radial-basis kernel was chosen. Each of the datasets was split into 70\% testing data, 30\% training data. \\
 
 \section{Results}
     Table \ref{table:accuracy} shows the accuracy results of the classical and quantum support vector machine experiments on all three datasets. \\
@@ -64,10 +64,16 @@
       \caption{\label{table:accuracy}Model accuracy results.}
     \end{table}
 
-    The relatively lower accuracy on the mouse dataset may be improved by using more data from the mouse dataset (up to the entire set), which would be more practical with real quantum hardware due to its scale, as described previously in the \textit{Methods} section. Although the removal of data results in lower accuracy, the primary focus of this research is to compare the performance of the two support vector machine approaches, rather than focus on optimizing the model performance itself.
+    The quantum implementation of SVM created a model with slightly better accuracy on the yeast dataset (49\% vs. 45\%). However, it did not perform as well on the E. Coli (70\% vs. 90\%) and Mouse datasets (22\% vs. 43\%). For a deeper analysis, it would be ideal to perform other quantum machine learning classification algorithms (or different kernels) on the data to provide more benchmarks. Precision, recall, and F1-score are some measures that could be used to further analyze the experimental output. \\
+
+    The relatively lower accuracy on the mouse dataset may be improved by using more data from the mouse dataset (up to the entire set), which would be more practical with real quantum hardware due to its scale, as described previously in the \textit{Methods} section. Although the removal of data results in lower accuracy, the primary focus of this research is to compare the performance of the two support vector machine approaches, rather than focus on optimizing the model performance itself. \\
+
+    A parameter that can be specified when constructing an algorithm in Qiskit is the number of shots, which specifies how many times a quantum circuit is repeated. The reason it's desirable to repeat the circuit multiple times is to gradually build up distribution statistics of the logical circuit results. In Qiskit, this number is 1024 by default. The value was reduced to 256 to speed up the computation time. Even when reducing the number of shots to 256, the quantum algorithms still took a very long time compared to the classical approach. Overall, each of the three quantum algorithm runs (with all 256 shots included) took several hours, while performing the same task classically completed in under a minute. Assuming the QASM simulator is accurate and factors in noise and other environmental factors, using a physical IBM Q backend should produce similar results to those above with faster speed.
 
 \section{Conclusion}
-  This work challenges the notion that quantum computing algorithms are not practical for modern use. The hardware is indeed limited, however, Qiskit and other frameworks enable convenient quantum algorithm usage and lower the barrier for entry by opening the source code to the public.
+  This work challenges the notion that quantum computing algorithms are not practical for modern use. The hardware is indeed limited, however, Qiskit and other frameworks enable convenient quantum algorithm usage and lower the barrier for entry by opening the source code to the public. \\
+
+  Overall, the quantum computing space may be something to consider for future scientific work. Quantum computers will supposedly be excellent at solving optimization problems, which are at the core of artificial intelligence and machine learning problems. Thus, it is likely that bioinformatics will enjoy a surge of innovation as quantum computers establish their place in society.
 
 \section{Supplementary Material}
 All of the source code is publicly available at [URL].
