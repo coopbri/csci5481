@@ -1,6 +1,7 @@
 \documentclass{article}
 
 % Packages
+\usepackage{graphicx}
 \usepackage{indentfirst}
 \usepackage{hyperref}
 \usepackage{hyperref} \hypersetup{
@@ -45,12 +46,19 @@
       \item Mice Protein Expression~\cite{mouse}
     \end{itemize}
 
+    \begin{figure}[h]
+      \centering
+      \includegraphics[width=1\textwidth]{data.png}
+      \caption{\label{fig:data}Visualization of the data.}
+    \end{figure}
+
+
   The full E. Coli (336 instances, 7 features) and Yeast (1484 instances, 8 features) datasets were used, but a subset of the mouse dataset was used (553 instances -- after removing instances with missing attributes -- and the first 9 features). This is because the original size of the mouse dataset, with 1080 instances and 82 features, would be intractable for a classical quantum simulation without distributing the task with GPU acceleration or a real quantum computer. \\
 
   A support vector machine with a radial-basis kernel was chosen. Each of the datasets was split into 70\% testing data, 30\% training data. \\
 
 \section{Results}
-    Table \ref{table:accuracy} shows the accuracy results of the classical and quantum support vector machine experiments on all three datasets. \\
+    Table \ref{table:accuracy} shows the accuracy results of the classical and quantum support vector machine experiments on all three datasets. Figure \ref{fig:results} shows the same results graphically. \\
 
     \begin{table}[h]
       \centering
@@ -63,6 +71,14 @@
       \end{tabular}
       \caption{\label{table:accuracy}Model accuracy results.}
     \end{table}
+
+    \hfill \break
+
+    \begin{figure}[h]
+      \centering
+      \includegraphics[width=1\textwidth]{accuracy.png}
+      \caption{\label{fig:results}Visual model accuracy results.}
+    \end{figure}
 
     The quantum implementation of SVM created a model with slightly better accuracy on the yeast dataset (49\% vs. 45\%). However, it did not perform as well on the E. Coli (70\% vs. 90\%) and Mouse datasets (22\% vs. 43\%). For a deeper analysis, it would be ideal to perform other quantum machine learning classification algorithms (or different kernels) on the data to provide more benchmarks. Precision, recall, and F1-score are some measures that could be used to further analyze the experimental output. \\
 
