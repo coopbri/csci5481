@@ -26,7 +26,7 @@
   Quantum computing is an emergent field that provides promising potential for the field of bioinformatics. Among various problems, classification is a common task in bioinformatics machine learning tasks for identifying and predicting classes of objects, such as organisms or genes. Using a quantum variant of the classical support vector machine, a quantum model can be created in a similar manner to a classical support vector machine model for making predictions. Applied quantum computing is quite new, and it is not commonly used in modern bioinformatics experiments. Here, it is demonstrated that quantum computing frameworks, although in their infancy, can be used to design and test classification models, and are robust enough to prototype. The accuracy of the quantum support vector machine is demonstrated to compare competitively with its classical counterpart, despite claims that quantum computing is not yet mature enough for widespread use. This challenges the current stigma associated with quantum computing. These results demonstrate that quantum computing may be ready for testing in modern experiments extending beyond bioinformatics into other scientific domains.
 
 \section{Related Work}
-  Quantum computing has a rich theoretical history, but not many have pursued it in an applied and experimental context. Biamonte, et al.~\cite{biamonte} argue that the foundation for quantum machine learning algorithms is strong, yet considerably limited by hardware and software challenges. An important point in~\cite{schuld} is that the ability to simulate the actual, concrete learning process in quantum systems is unsatisfactorily documented, and thus requires more development. In contrast to these worldviews, it is argued in~\cite{biamonte} that machine learning has a bright future when utilizing quantum processing power, and they mention that significant advancements have been made when it comes to hardware.
+  Quantum computing has a rich theoretical history, but not many have pursued it in an applied and experimental context. Biamonte, et al.~\cite{biamonte} argue that the foundation for quantum machine learning algorithms is strong, yet considerably limited by hardware and software challenges. They clarify that certain devices (such as annealing quantum computers) \textit{have} been built with apparently large qubit counts (2000, for example), although they do not communicate with each other well at such a scale yet, so there is ample room for improvement. An important point in~\cite{schuld} is that the ability to simulate the actual, concrete learning process in quantum systems is unsatisfactorily documented, and thus requires more development. They emphasize that we need to be careful in the wishful optimism of quantum computing's usefulness to machine learning -- especially considering its infancy. In contrast to these worldviews, both~\cite{biamonte} and~\cite{schuld} project that machine learning has a bright future when utilizing quantum processing power, and they mention that significant advancements have been made when it comes to hardware.
 
 \section{Methods}
   Qiskit~\cite{ibm}, a Python quantum computing API and framework from IBM, was used to design the models and execute the tests. Qiskit provides two distinct methods for performing quantum computing experiments:
@@ -58,33 +58,33 @@
   A support vector machine with a radial-basis kernel was chosen. Each of the datasets was split into 70\% testing data, 30\% training data. \\
 
 \section{Results}
-    Table \ref{table:accuracy} shows the accuracy results of the classical and quantum support vector machine experiments on all three datasets. Figure \ref{fig:results} shows the same results graphically. \\
+  Table \ref{table:accuracy} shows the accuracy results of the classical and quantum support vector machine experiments on all three datasets. Figure \ref{fig:results} shows the same results graphically. \\
 
-    \begin{table}[h]
-      \centering
-      \begin{tabular}{c|c|c|}
-      \cline{2-3}
-                                    & Classical SVM & Quantum SVM \\ \hline
-      \multicolumn{1}{|c|}{E. Coli} & 90\%          & 70\%        \\ \hline
-      \multicolumn{1}{|c|}{Yeast}   & 45\%          & 49\%        \\ \hline
-      \multicolumn{1}{|c|}{Mouse}   & 43\%          & 22\%        \\ \hline
-      \end{tabular}
-      \caption{\label{table:accuracy}Model accuracy results.}
-    \end{table}
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{c|c|c|}
+    \cline{2-3}
+                                  & Classical SVM & Quantum SVM \\ \hline
+    \multicolumn{1}{|c|}{E. Coli} & 90\%          & 70\%        \\ \hline
+    \multicolumn{1}{|c|}{Yeast}   & 45\%          & 49\%        \\ \hline
+    \multicolumn{1}{|c|}{Mouse}   & 43\%          & 22\%        \\ \hline
+    \end{tabular}
+    \caption{\label{table:accuracy}Model accuracy results.}
+  \end{table}
 
-    \hfill \break
+  \hfill \break
 
-    \begin{figure}[h]
-      \centering
-      \includegraphics[width=1\textwidth]{accuracy.png}
-      \caption{\label{fig:results}Visual model accuracy results.}
-    \end{figure}
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{accuracy.png}
+    \caption{\label{fig:results}Visual model accuracy results.}
+  \end{figure}
 
-    The quantum implementation of SVM created a model with slightly better accuracy on the yeast dataset (49\% vs. 45\%). However, it did not perform as well on the E. Coli (70\% vs. 90\%) and Mouse datasets (22\% vs. 43\%). For a deeper analysis, it would be ideal to perform other quantum machine learning classification algorithms (or different kernels) on the data to provide more benchmarks. Precision, recall, and F1-score are some measures that could be used to further analyze the experimental output. \\
+  The quantum implementation of SVM created a model with slightly better accuracy on the yeast dataset (49\% vs. 45\%). However, it did not perform as well on the E. Coli (70\% vs. 90\%) and Mouse datasets (22\% vs. 43\%). For a deeper analysis, it would be ideal to perform other quantum machine learning classification algorithms (or different kernels) on the data to provide more benchmarks. Precision, recall, and F1-score are some measures that could be used to further analyze the experimental output. \\
 
-    The relatively lower accuracy on the mouse dataset may be improved by using more data from the mouse dataset (up to the entire set), which would be more practical with real quantum hardware due to its scale, as described previously in the \textit{Methods} section. Although the removal of data results in lower accuracy, the primary focus of this research is to compare the performance of the two support vector machine approaches, rather than focus on optimizing the model performance itself. \\
+  The relatively lower accuracy on the mouse dataset may be improved by using more data from the mouse dataset (up to the entire set), which would be more practical with real quantum hardware due to its scale, as described previously in the \textit{Methods} section. Although the removal of data results in lower accuracy, the primary focus of this research is to compare the performance of the two support vector machine approaches, rather than focus on optimizing the model performance itself. \\
 
-    A parameter that can be specified when constructing an algorithm in Qiskit is the number of shots, which specifies how many times a quantum circuit is repeated. The reason it's desirable to repeat the circuit multiple times is to gradually build up distribution statistics of the logical circuit results. In Qiskit, this number is 1024 by default. The value was reduced to 256 to speed up the computation time. Even when reducing the number of shots to 256, the quantum algorithms still took a very long time compared to the classical approach. Overall, each of the three quantum algorithm runs (with all 256 shots included) took several hours, while performing the same task classically completed in under a minute. Assuming the QASM simulator is accurate and factors in noise and other environmental factors, using a physical IBM Q backend should produce similar results to those above with faster speed.
+  A parameter that can be specified when constructing an algorithm in Qiskit is the number of shots, which specifies how many times a quantum circuit is repeated. The reason it's desirable to repeat the circuit multiple times is to gradually build up distribution statistics of the logical circuit results. In Qiskit, this number is 1024 by default. The value was reduced to 256 to speed up the computation time. Even when reducing the number of shots to 256, the quantum algorithms still took a very long time compared to the classical approach. Overall, each of the three quantum algorithm runs (with all 256 shots included) took several hours, while performing the same task classically completed in under a minute. Assuming the QASM simulator is accurate and factors in noise and other environmental factors, using a physical IBM Q backend should produce similar results to those above with faster speed.
 
 \section{Conclusion}
   This work challenges the notion that quantum computing algorithms are not practical for modern use. The hardware is indeed limited, however, Qiskit and other frameworks enable convenient quantum algorithm usage and lower the barrier for entry by opening the source code to the public. \\
@@ -92,11 +92,11 @@
   Overall, the quantum computing space may be something to consider for future scientific work. Quantum computers will supposedly be excellent at solving optimization problems, which are at the core of artificial intelligence and machine learning problems. Thus, it is likely that bioinformatics will enjoy a surge of innovation as quantum computers establish their place in society.
 
 \section{Supplementary Material}
-All of the source code is publicly available at [URL].
+  All of the source code is publicly available at [URL].
 
 \newpage
 \bibliographystyle{plain}
 \raggedright
-\bibliography{./final-project}
+\bibliography{./final-project
 
 \end{document}
