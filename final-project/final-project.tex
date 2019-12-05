@@ -9,6 +9,7 @@
   citecolor=black,
   urlcolor=blue,
 }
+\usepackage{float}
 
 \title{%
   CSCI 5481 Final Project \\
@@ -27,16 +28,16 @@
   Quantum computing has a rich theoretical history, but not many have pursued it in an applied and experimental context. Biamonte, et al.~\cite{biamonte} argue that the foundation for quantum machine learning algorithms is strong, yet considerably limited by hardware and software challenges. An important point in~\cite{schuld} is that the ability to simulate the actual, concrete learning process in quantum systems is unsatisfactorily documented, and thus requires more development. In contrast to these worldviews, it is argued in~\cite{biamonte} that machine learning has a bright future when utilizing quantum processing power, and they mention that significant advancements have been made when it comes to hardware.
 
 \section{Methods}
-  Qiskit provides two distinct methods for performing quantum computing experiments:
+  Qiskit~\cite{ibm}, a Python quantum computing API and framework from IBM, was used to design the models and execute the tests. Qiskit provides two distinct methods for performing quantum computing experiments:
 
     \begin{itemize}
       \item{Running tasks on real quantum computing hardware (connected with an API to IBM Q computers)}
       \item{A built-in quantum hardware simulator for performing experiments on a classical computer}
     \end{itemize}
 
-  The simulator was chosen, as I do not have any academic credit required to perform experiments on real quantum computing hardware. This necessarily rules out any accurate analysis of the time and space complexities, since quantum computing mathematics is calculated within a classical computer environment. Quantum computing algorithms are, of course, designed to be run on quantum hardware, so the computational time and space cannot be accurately gauged in this manner. Qiskit does provide GPU acceleration support through its QCGPU communication package.~\cite{qcgpu} \\
+  The simulator was chosen, as I do not have any academic credit required to perform experiments on real quantum computing hardware. This necessarily rules out any accurate analysis of the time and space complexities, since quantum computing mathematics is calculated within a classical computer environment. Quantum computing algorithms are, of course, designed to be run on quantum hardware, so the computational time and space cannot be accurately gauged in this manner. Qiskit does provide GPU acceleration support through its QCGPU communication package~\cite{qcgpu}. \\
 
-  Multivariate data was selected from the UCI Machine Learning Repository~\cite{mlrepo}. Instances from three datasets were used:
+  Multivariate data was selected from the UCI Machine Learning Repository~\cite{uci}. Instances from three datasets were used:
 
     \begin{itemize}
       \item E. Coli~\cite{ecoli}
@@ -46,12 +47,10 @@
 
   The full E. Coli (336 instances, 7 features) and Yeast (1484 instances, 8 features) datasets were used, but a subset of the mouse dataset was used (553 instances -- after removing instances with missing attributes -- and the first 9 features). This is because the original size of the mouse dataset, with 1080 instances and 82 features, would be intractable for a classical quantum simulation without distributing the task with GPU acceleration or a real quantum computer. \\
 
-  A support vector machine with a radial-basis kernel was chosen. Each of the datasets, having features and class labels for training and testing, are capable of building classification models. \\
-
-  The experiments were performed on an Intel processor at 4.60GHz running Linux.
+  A support vector machine with a radial-basis kernel was chosen. Each of the datasets was split into 70\% testing data, 30\% training data.
 
 \section{Results}
-    Table \ref{table:accuracy} shows the accuracy results of the classical and quantum support vector machine experiments on all three datasets.
+    Table \ref{table:accuracy} shows the accuracy results of the classical and quantum support vector machine experiments on all three datasets. \\
 
     \begin{table}[h]
       \centering
@@ -68,7 +67,7 @@
     The relatively lower accuracy on the mouse dataset may be improved by using more data from the mouse dataset (up to the entire set), which would be more practical with real quantum hardware due to its scale, as described previously in the \textit{Methods} section. Although the removal of data results in lower accuracy, the primary focus of this research is to compare the performance of the two support vector machine approaches, rather than focus on optimizing the model performance itself.
 
 \section{Conclusion}
-  Abc
+  This work challenges the notion that quantum computing algorithms are not practical for modern use. The hardware is indeed limited, however, Qiskit and other frameworks enable convenient quantum algorithm usage and lower the barrier for entry by opening the source code to the public.
 
 \section{Supplementary Material}
 All of the source code is publicly available at [URL].
